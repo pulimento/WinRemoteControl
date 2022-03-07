@@ -1,0 +1,9 @@
+{
+  "ClientID": "ClientSubscriber",
+  "TCPServerIP": "192.168.1.5",
+  "TCPServerPort": 1883,
+  "TCPServerUsername": "user",
+  "TCPServerPassword": "someawesomepass",
+  "CommunicationTimeoutInMinutes": 5,
+  "AutoReconnectDelayInSeconds": 5
+}

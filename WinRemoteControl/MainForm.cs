@@ -196,7 +196,7 @@ namespace WinRemoteControl
                 $"Payload: {payload} | " +
                 $"QoS: {x.ApplicationMessage.QualityOfServiceLevel}";
 
-            Log.Debug("MESSAGE", $"Message: {item}");
+            Log.Debug($"MQTT Message: {item}");
             this.DoActionForTopic(topic, payload);
 
             return Task.CompletedTask;

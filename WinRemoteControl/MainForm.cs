@@ -99,7 +99,11 @@ namespace WinRemoteControl
 
         private void btnOpenSettings_Click(object sender, EventArgs e)
         {
-            Config.ExploreSettingsFile();
+            var result = Config.ExploreSettingsFile();
+            if (result.IsFailed)
+            {
+                Log("ERROR", $"Error opening settings: {ResultErrorsToString(result.Errors)}");
+            }
         }
 
         private void btnStartClient_Click(object sender, EventArgs e)

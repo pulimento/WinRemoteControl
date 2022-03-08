@@ -90,10 +90,10 @@ namespace WinRemoteControl
             this.btnOpenSettings.Name = "btnOpenSettings";
             this.btnOpenSettings.Size = new System.Drawing.Size(114, 22);
             this.btnOpenSettings.TabIndex = 5;
-            this.btnOpenSettings.Text = "Open config folder";
+            this.btnOpenSettings.Text = "Open settings file";
             this.btnOpenSettings.UseVisualStyleBackColor = true;
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -105,7 +105,7 @@ namespace WinRemoteControl
             this.Controls.Add(this.btnMute);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "WinRemoteControl";
             this.ResumeLayout(false);
             this.PerformLayout();

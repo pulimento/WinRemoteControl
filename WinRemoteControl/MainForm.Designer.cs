@@ -114,9 +114,9 @@ namespace WinRemoteControl
 
         #endregion
 
+        public TextBox textBoxLog;
         private Button btnMute;
         private Button btnStartClient;
-        private TextBox textBoxLog;
         private Button btnGoToBackground;
         private NotifyIcon notifyIcon1;
 

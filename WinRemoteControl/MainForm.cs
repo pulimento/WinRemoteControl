@@ -10,6 +10,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Serilog;
+using WinRemoteControl.LoggerExtensions;
 
 namespace WinRemoteControl
 {
@@ -30,10 +32,12 @@ namespace WinRemoteControl
         static extern int SetForegroundWindow(IntPtr point);
 
         public MainForm()
-        {
+        { 
+            SetupLog();
             InitializeComponent();
             SetEventListeners();
-            Log("APP", "Application started", logToTextBox: false);
+
+            Log.Information("Application started");            
         }
 
         #region Actions
@@ -55,7 +59,7 @@ namespace WinRemoteControl
 
         private void MuteTeams()
         {
-            this.Log("ACTION", "Toggle Teams mute");
+            Log.Information("Toggling Teams mute");
 
             Process? p = Process.GetProcessesByName("Teams").FirstOrDefault();
             if (p != null)
@@ -66,13 +70,13 @@ namespace WinRemoteControl
             }
             else
             {
-                this.Log("ERROR", "Can't find Teams process. Is it running?");
+                Log.Error("Can't find Teams process. Is it running?");
             }
         }
 
         private void DoVolumeUp()
         {
-            this.Log("ACTION", "Volume UP");
+            Log.Information("Volume UP");
             this.BeginInvoke((MethodInvoker)delegate
             {
                 SendMessageW(this.Handle, Constants.WM_APPCOMMAND, this.Handle, (IntPtr)Constants.APPCOMMAND_VOLUME_UP);
@@ -81,7 +85,7 @@ namespace WinRemoteControl
 
         private void DoVolumeDown()
         {
-            this.Log("ACTION", "Volume DOWN");
+            Log.Information("Volume DOWN");
             this.BeginInvoke((MethodInvoker)delegate
             {
                 SendMessageW(this.Handle, Constants.WM_APPCOMMAND, this.Handle, (IntPtr)Constants.APPCOMMAND_VOLUME_DOWN);
@@ -102,7 +106,7 @@ namespace WinRemoteControl
             var result = Config.ExploreSettingsFile();
             if (result.IsFailed)
             {
-                Log("ERROR", $"Error opening settings: {ResultErrorsToString(result.Errors)}");
+                Log.Error($"Error opening settings: {ResultErrorsToString(result.Errors)}");
             }
         }
 
@@ -120,7 +124,7 @@ namespace WinRemoteControl
             var checkSettingsResult = Config.CheckSettingsFile();
             if (checkSettingsResult.IsFailed)
             {
-                Log("ERROR", $"Error checking settings: {ResultErrorsToString(checkSettingsResult.Errors)}");
+                Log.Error($"Error checking settings: {ResultErrorsToString(checkSettingsResult.Errors)}");
                 return;
             }
 
@@ -131,12 +135,12 @@ namespace WinRemoteControl
             }
             if (this.mqttClient.IsStarted)
             {
-                this.Log("WARN", $"Client already started, doing nothing");
+                Log.Warning($"Client already started, doing nothing");
                 return;
             }
             if (this.mqttClient.IsConnected)
             {
-                this.Log("WARN", $"Client already connected, doing nothing");
+                Log.Warning($"Client already connected, doing nothing");
                 return;
             }
 
@@ -148,14 +152,14 @@ namespace WinRemoteControl
             var clientConfig = Config.LoadClientConfigFromFile();
             if (clientConfig.IsFailed)
             {
-                Log("ERROR", $"Error loading settings: {ResultErrorsToString(checkSettingsResult.Errors)}");
+                Log.Error($"Error loading settings: {ResultErrorsToString(checkSettingsResult.Errors)}");
             }
             else
             {
                 await this.mqttClient.StartAsync(clientConfig.Value);
             }
 
-            this.Log("START", $"MQTT client started sucessfully");
+            Log.Information($"MQTT client started sucessfully, trying to connect...");
         }
 
         #endregion
@@ -167,17 +171,17 @@ namespace WinRemoteControl
                 $"ResultCode: {x.ConnectResult.ResultCode} | " +
                 $"Reason: {x.ConnectResult.ReasonString} | " +
                 $"ResponseInfo: {x.ConnectResult.ResponseInformation}";
-            this.Log("CONNECTED", $"MQTT client connected - {item}");
+            Log.Information($"MQTT client connected - {item}");
 
             // Subscribe to topics
-            this.Log("SUBSCRIBE", $"About to subscribe to topics: [{string.Join(",", topicsToSubscribe.Select(t => t.Topic))}]");
+            Log.Information($"About to subscribe to topics: [{string.Join(",", topicsToSubscribe.Select(t => t.Topic))}]");
             if (this.mqttClient != null)
             {
                 await this.mqttClient.SubscribeAsync(topicsToSubscribe);
             }
             else
             {
-                Log("ERROR", "MQTT Client not ready, impossible to subscribe. Please try again later");
+                Log.Error("MQTT Client not ready, impossible to subscribe. Please try again later");
             }
 
             return Task.CompletedTask;
@@ -192,7 +196,7 @@ namespace WinRemoteControl
                 $"Payload: {payload} | " +
                 $"QoS: {x.ApplicationMessage.QualityOfServiceLevel}";
 
-            this.Log("MESSAGE", item);
+            Log.Debug("MESSAGE", $"Message: {item}");
             this.DoActionForTopic(topic, payload);
 
             return Task.CompletedTask;
@@ -204,7 +208,7 @@ namespace WinRemoteControl
                 $"ResultCode: {x.ConnectResult.ResultCode} | " +
                 $"Reason: {x.ConnectResult.ReasonString} | " +
                 $"ResponseInfo: {x.ConnectResult.ResponseInformation}";
-            this.Log("DISCONNECTED", item);
+            Log.Information($"Client disconnected - {item}");
 
             return Task.CompletedTask;
         }
@@ -238,6 +242,7 @@ namespace WinRemoteControl
 
         #region Utilities
 
+        /*
         private void Log(string tag, string message, bool logToTextBox = true)
         {
             var lineToLog = $"{DateTime.Now:MM/dd/yy H:mm:ss.fff} # {tag} # {message}";
@@ -249,6 +254,23 @@ namespace WinRemoteControl
                     this.textBoxLog.AppendText(lineToLog + Environment.NewLine);
                 });
             }
+        }
+        */        
+
+        private void SetupLog()
+        {
+            var outputTemplate =
+                "{Timestamp:MM/dd/yy H:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}";
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .WriteTo.Console(outputTemplate: outputTemplate)
+                .WriteTo.Debug(outputTemplate: outputTemplate)
+                .WriteTo.File("logs/log.txt", 
+                    rollingInterval: RollingInterval.Month,
+                    outputTemplate: outputTemplate)
+                .WriteTo.WindowsFormsSink(this, outputTemplate: outputTemplate)
+                .CreateLogger();
         }
 
         private string ResultErrorsToString(List<IError> e)

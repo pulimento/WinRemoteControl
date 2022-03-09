@@ -85,7 +85,7 @@ jobs:
       
     - name: Run Inno Setup script compiler
       shell: pwsh
-      run: & "$HOME\AppData\Local\Programs\Inno Setup 6\ISCC.exe" ".\Installer\InstallerScript.iss"
+      run: '& "$HOME\AppData\Local\Programs\Inno Setup 6\ISCC.exe" $Env:InnoSetupScript_Path'
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     #- name: Decode the pfx

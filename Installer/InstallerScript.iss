@@ -28,6 +28,7 @@ SetupIconFile=C:\code\WinRemoteControl\WinRemoteControl\Resources\big_icon_5jt_i
 Compression=lzma2/max
 SolidCompression=yes
 WizardStyle=modern
+SourceDir=WinRemoteControl\WinRemoteControl\bin\Release\net5.0-windows\win-x64\publish
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -38,8 +39,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 ;was in the previous line - Flags: unchecked
 
 [Files]
-Source: "C:\code\WinRemoteControl\WinRemoteControl\bin\Release\net5.0-windows\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\code\WinRemoteControl\WinRemoteControl\bin\Release\net5.0-windows\*"; Excludes: "settings.json"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#SourceDir}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceDir}\*"; Excludes: "settings.json"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

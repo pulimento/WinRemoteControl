@@ -10,7 +10,6 @@ on:
     branches: [ master ]
     
 env:
-  Project_Name: WinRemoteControl
   Framework: net5.0-windows
   Configuration: Release
   Solution_Name: WinRemoteControl.sln
@@ -64,13 +63,13 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: 32-bit build
-        path: ${{ GITHUB_WORKSPACE }}\${{ env.Project_Path }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}
+        path: ${{ github.workspace }}\${{ env.Project_Path }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}
         
     - name: Upload build artifacts - 64-bit
       uses: actions/upload-artifact@v3
       with:
         name: 64-bit build 
-        path: ${{ env.Project_Name }}\${{ env.Project_Path }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win64 }}
+        path: ${{ github.workspace }}\${{ env.Project_Path }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win64 }}
         
     # Inno-Setup
     - name: Download Inno Setup

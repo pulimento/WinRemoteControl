@@ -49,7 +49,9 @@ jobs:
     - name: Run Inno Setup script compiler
       shell: pwsh
       run: |
-        "$HOME\AppData\Local\Programs\Inno Setup 6\ISCC.exe" "${{ github.workspace }}\${{ env.InnoSetupScript_Path }}"
+        cd "$HOME\AppData\Local\Programs\Inno Setup 6\"        
+        .\ISCC.exe "${{ github.workspace }}\${{ env.InnoSetupScript_Path }}"
+        cd "${{ github.workspace }}"
 
     # Install the .NET Core workload
     - name: Install .NET Core

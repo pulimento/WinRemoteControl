@@ -41,6 +41,10 @@ jobs:
     - name: Install Inno Setup
       shell: pwsh
       run: .\is.exe /verysilent /currentuser /log=islog.txt
+      
+    - name: Print Inno Setup install log
+      shell: pwsh
+      run: cat islog.txt
         
     - name: Run Inno Setup script compiler
       shell: pwsh

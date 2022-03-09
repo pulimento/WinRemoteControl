@@ -12,7 +12,6 @@ env:
   Solution_Name: WinRemoteControl.sln
   Project_Path: WinRemoteControl\WinRemoteControl
   Csproj_Project_Path: WinRemoteControl\WinRemoteControl.csproj
-  Published_Build_Artifacts_Path_Without_Abi:  ${{ env.Project_Path }}\bin\${{ env:Configuration }}\${{ env:Framework }}
   # Wap_Project_Directory: your-wap-project-directory-name    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
   # Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
 
@@ -65,7 +64,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Upload published build files
-        path: ${{ env:Published_Build_Artifacts_Path_Without_Abi }}\${{ env.abi }}
+        path: ${{ env:Project_Path }}\bin\${{ env:Configuration }}\${{ env:Framework }}\${{ env.abi }}
       env:
         abi: ${{ matrix.abi }}
 

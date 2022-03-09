@@ -84,11 +84,12 @@ jobs:
       
     - name: Generate Inno Setup Installer - 32 bit
       shell: pwsh
-      run: |
-        .\GenerateInstaller.ps1 \
-        -installerOutputPath '${{ github.workspace }}\${{ env.ArtifactsFolderName }}' \
-        -buildOutputPath ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }} \
-        -setupExecutableNameIncludingEXEExtension {{ env.Win32InstallerName }} \
+      # Note: Here we're using the 'folded' style in the [YAML Syntax](https://yaml-multiline.info/)
+      run: >
+        .\GenerateInstaller.ps1
+        -installerOutputPath '${{ github.workspace }}\${{ env.ArtifactsFolderName }}'
+        -buildOutputPath ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}
+        -setupExecutableNameIncludingEXEExtension {{ env.Win32InstallerName }}
         -CsprojPath ${{ env.Csproj_Project_Path }}
 
     - name: Publish installer as artifact - 32-bit

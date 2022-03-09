@@ -20,8 +20,8 @@ env:
   # Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
   Win64: win-x64
   Win32: win-x86
-  InnoSetup_Path: "$HOME\AppData\Local\Programs\Inno Setup 6\ISCC.exe"
-  InnoSetupScript_Path: ".\Installer\InstallerScript.iss"
+  InnoSetup_Path: $HOME\AppData\Local\Programs\Inno Setup 6\ISCC.exe
+  InnoSetupScript_Path: .\Installer\InstallerScript.iss
 
 jobs:
 

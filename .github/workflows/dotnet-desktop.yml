@@ -55,7 +55,7 @@ jobs:
     
     # Generate build artifacts
     - name: Build the application
-      run: dotnet publish ${{ env:Csproj_Project_Path }} /p:Configuration=${{ env:Configuration }} -r ${{ env.abi }}
+      run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.abi }}
       env:
         abi: ${{ matrix.abi }}
         
@@ -64,7 +64,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Upload published build files
-        path: ${{ env:Project_Path }}\bin\${{ env:Configuration }}\${{ env:Framework }}\${{ env.abi }}
+        path: ${{ env.Project_Path }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.abi }}
       env:
         abi: ${{ matrix.abi }}
 

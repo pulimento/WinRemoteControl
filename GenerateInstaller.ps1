@@ -11,7 +11,7 @@
 
 param
 (
-  [Parameter(HelpMessage="Overrides build identifier")][string]$buildIdentifier,
+  [Parameter(HelpMessage="Overrides build identifier, script tries to get it automatically")][string]$buildIdentifier,
   [string]$baseDirectory = "$PSScriptRoot",
   [string]$installerOutputPath = "Installer\Output",
   [Parameter(mandatory=$true)][string]$buildOutputPath = "WinRemoteControl\bin\Release\net5.0-windows\win-x86\publish",

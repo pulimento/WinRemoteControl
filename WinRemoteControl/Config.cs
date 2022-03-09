@@ -36,14 +36,22 @@ namespace WinRemoteControl
                     var jsonDefaultSettingsString = defaultSettingsReader.ReadToEnd();
                     SettingsFromFile? defaultSettings = JsonSerializer.Deserialize<SettingsFromFile>(jsonDefaultSettingsString);
 
-
-                    if (settings == defaultSettings)
+                    if (settings != null && defaultSettings != null)
                     {
-                        return Result.Fail("It seems that you have the default settings. Please change them in the file.");
+                        if (settings.Equals(defaultSettings))
+                        {
+                            return Result.Fail("It seems that you have the default settings. Please change them in the file.");
+                        }
+                        else
+                        {
+                            // Settings file exists, and settings aren't the default ones
+                            return Result.Ok();
+                        }
                     }
                     else
                     {
-                        // Settings file exists, and settings aren't the default ones
+                        // At least one of them is null. That would be a corner case, because we've already checked if the file exists.
+                        // Just return OK
                         return Result.Ok();
                     }
                 }
@@ -63,7 +71,8 @@ namespace WinRemoteControl
 
                     if (File.Exists(settingsFilePath))
                     {
-                        return Result.Ok();
+                        return Result.Fail("Settings file was created, but it will need to be modified in order to work. " +
+                            "Please change it. Use the button 'Open settings file' for that");
                     }
                     else
                     {
@@ -126,7 +135,7 @@ namespace WinRemoteControl
             {
                 // File doesn't exists, let's try to open the folder
                 string? settingsDirectoryName = Path.GetDirectoryName(settingsFilePath);
-                if (settingsDirectoryName != null && File.Exists(settingsDirectoryName))
+                if (settingsDirectoryName != null && Directory.Exists(settingsDirectoryName))
                 {
                     filePath = settingsDirectoryName;
                 }
@@ -154,6 +163,24 @@ namespace WinRemoteControl
             public string? TCPServerPassword { get; set; }
             public int CommunicationTimeoutInMinutes { get; set; }
             public int AutoReconnectDelayInSeconds { get; set; }
+
+            public bool Equals(SettingsFromFile? other)
+            {
+                return other!=null&&
+                       this.ClientID==other.ClientID&&
+                       this.TCPServerIP==other.TCPServerIP&&
+                       this.TCPServerPort==other.TCPServerPort&&
+                       this.TCPServerUsername==other.TCPServerUsername&&
+                       this.TCPServerPassword==other.TCPServerPassword&&
+                       this.CommunicationTimeoutInMinutes==other.CommunicationTimeoutInMinutes&&
+                       this.AutoReconnectDelayInSeconds==other.AutoReconnectDelayInSeconds;
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(this.ClientID, this.TCPServerIP, this.TCPServerPort, this.TCPServerUsername, 
+                    this.TCPServerPassword, this.CommunicationTimeoutInMinutes, this.AutoReconnectDelayInSeconds);
+            }
         }
     }
 }

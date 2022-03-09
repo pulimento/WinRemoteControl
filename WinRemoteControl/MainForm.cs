@@ -5,11 +5,10 @@ using MQTTnet.Client.Disconnecting;
 using MQTTnet.Extensions.ManagedClient;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WinRemoteControl.Actions;
 using Serilog;
 using WinRemoteControl.LoggerExtensions;
 
@@ -25,12 +24,6 @@ namespace WinRemoteControl
             new MqttTopicFilter { Topic =  Constants.TOPIC_VOLUME_DOWN }
         };
 
-        [DllImport("user32.dll")]
-        static extern IntPtr SendMessageW(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("User32.dll")]
-        static extern int SetForegroundWindow(IntPtr point);
-
         public MainForm()
         { 
             SetupLog();
@@ -40,65 +33,27 @@ namespace WinRemoteControl
             Log.Information("Application started");            
         }
 
-        #region Actions
         private void DoActionForTopic(string topic, string payload)
         {
             if (topic == Constants.TOPIC_TOGGLE_TEAMS_MUTE)
             {
-                MuteTeams();
+                new ToggleMuteTeamsAction().DoAction();
             }
             else if (topic == Constants.TOPIC_VOLUME_UP)
             {
-                DoVolumeUp();
+                new VolumeUpAction(this).DoAction();
             }
             else if (topic == Constants.TOPIC_VOLUME_DOWN)
             {
-                DoVolumeDown();
+                new VolumeDownAction(this).DoAction();
             }
         }
-
-        private void MuteTeams()
-        {
-            Log.Information("Toggling Teams mute");
-
-            Process? p = Process.GetProcessesByName("Teams").FirstOrDefault();
-            if (p != null)
-            {
-                IntPtr h = p.MainWindowHandle;
-                SetForegroundWindow(h);
-                SendKeys.SendWait("^+{m}"); // CTRL + SHIFT + M
-            }
-            else
-            {
-                Log.Error("Can't find Teams process. Is it running?");
-            }
-        }
-
-        private void DoVolumeUp()
-        {
-            Log.Information("Volume UP");
-            this.BeginInvoke((MethodInvoker)delegate
-            {
-                SendMessageW(this.Handle, Constants.WM_APPCOMMAND, this.Handle, (IntPtr)Constants.APPCOMMAND_VOLUME_UP);
-            });
-        }
-
-        private void DoVolumeDown()
-        {
-            Log.Information("Volume DOWN");
-            this.BeginInvoke((MethodInvoker)delegate
-            {
-                SendMessageW(this.Handle, Constants.WM_APPCOMMAND, this.Handle, (IntPtr)Constants.APPCOMMAND_VOLUME_DOWN);
-            });
-        }
-
-        #endregion
 
         #region UI Callbacks
 
         private void btnMute_Click(object sender, EventArgs e)
         {
-            MuteTeams();
+            new ToggleMuteTeamsAction().DoAction();
         }
 
         private void btnOpenSettings_Click(object sender, EventArgs e)

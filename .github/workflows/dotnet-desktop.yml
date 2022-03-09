@@ -46,7 +46,8 @@ jobs:
     #  env:
     #    abi: ${{ matrix.abi }}
     
-  build:  
+  build:
+    needs: prebuild
     strategy:
       matrix:
         abi: [win-x86, win-x64]  

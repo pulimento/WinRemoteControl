@@ -20,8 +20,8 @@ env:
   # Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
   Win64: win-x64
   Win32: win-x86
-  InnoSetupPath: "$HOME\AppData\Local\Programs\Inno Setup 6\ISCC.exe"
-  InnoSetupScriptPath: ".\Installer\InstallerScript.iss"
+  InnoSetup_Path: "$HOME\AppData\Local\Programs\Inno Setup 6\ISCC.exe"
+  InnoSetupScript_Path: ".\Installer\InstallerScript.iss"
 
 jobs:
 
@@ -85,7 +85,7 @@ jobs:
       
     - name: Run Inno Setup script compiler
       shell: pwsh
-      run: & ${{ env.InnoSetupPath }} ${{ env.InnoSetupScriptPath }}
+      run: & ${{ env.InnoSetup_Path }} ${{ env.InnoSetupScript_Path }}
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     #- name: Decode the pfx

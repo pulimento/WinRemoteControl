@@ -13,8 +13,8 @@ env:
   Framework: net5.0-windows
   Configuration: Release
   Solution_Name: WinRemoteControl.sln
-  Csproj_Project_Path: Csproj_Subfolder\WinRemoteControl.csproj
-  Csproj_Subfolder: Csproj_Subfolder
+  Csproj_Project_Path: WinRemoteControl\WinRemoteControl.csproj
+  Csproj_Subfolder: WinRemoteControl
   Win64: win-x64
   Win32: win-x86
   Win64InstallerName: WinRemoteControl_Setup_64bit.exe

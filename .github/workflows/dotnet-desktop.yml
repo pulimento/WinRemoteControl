@@ -17,8 +17,8 @@ env:
   Csproj_Project_Path: WinRemoteControl\WinRemoteControl.csproj
   # Wap_Project_Directory: your-wap-project-directory-name    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
   # Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
-  64-bit-abi: win-x64
-  32-bit-abi: win-x86
+  64BitAbi: win-x64
+  32BitAbi: win-x86
 
 jobs:
 
@@ -53,23 +53,23 @@ jobs:
     
     # Generate build artifacts
     - name: Build the application for 32-bit
-      run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.32-bit-abi }}
+      run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.32BitAbi }}
     
     - name: Build the application for 64-bit
-      run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.64-bit-abi }}
+      run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.64BitAbi }}
         
     # Upload published builds: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload build artifacts - 32-bit
       uses: actions/upload-artifact@v3
       with:
         name: 32-bit build
-        path: ${{ env.Project_Path }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.32-bit-abi }}
+        path: ${{ env.Project_Path }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.32BitAbi }}
         
     - name: Upload build artifacts - 64-bit
       uses: actions/upload-artifact@v3
       with:
         name: 64-bit build
-        path: ${{ env.Project_Path }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.64-bit-abi }}
+        path: ${{ env.Project_Path }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.64BitAbi }}
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     #- name: Decode the pfx

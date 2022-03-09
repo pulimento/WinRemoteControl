@@ -14,11 +14,14 @@ env:
   Configuration: Release
   Solution_Name: WinRemoteControl.sln
   Project_Path: WinRemoteControl\WinRemoteControl
+  Csproj_Subfolder: WinRemoteControl
   Csproj_Project_Path: WinRemoteControl\WinRemoteControl.csproj
   # Wap_Project_Directory: your-wap-project-directory-name    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
   # Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
   Win64: win-x64
   Win32: win-x86
+  InnoSetupPath: "$HOME\AppData\Local\Programs\Inno Setup 6\ISCC.exe"
+  InnoSetupScriptPath: ".\Installer\InstallerScript.iss"
 
 jobs:
 
@@ -63,13 +66,13 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: 32-bit build
-        path: ${{ github.workspace }}\${{ env.Project_Path }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}
+        path: ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}
         
     - name: Upload build artifacts - 64-bit
       uses: actions/upload-artifact@v3
       with:
         name: 64-bit build 
-        path: ${{ github.workspace }}\${{ env.Project_Path }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win64 }}
+        path: ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win64 }}
         
     # Inno-Setup
     - name: Download Inno Setup
@@ -79,6 +82,10 @@ jobs:
     - name: Install Inno Setup
       shell: pwsh
       run: .\is.exe /verysilent /currentuser
+      
+    - name: Run Inno Setup script compiler
+      shell: pwsh
+      run: & ${{ env.InnoSetupPath }} ${{ env.InnoSetupScriptPath }}
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     #- name: Decode the pfx

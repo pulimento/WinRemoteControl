@@ -66,7 +66,7 @@ jobs:
     #    name: 64-bit build 
     #    path: ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win64 }}
 
-    - name: Create Artifact Folder
+    - name: Create Artifacts Folder
       run: New-Item -Path '${{ github.workspace }}' -Name '${{ env.ArtifactsFolderName }}' -ItemType "directory"
 
     # Inno-Setup
@@ -78,9 +78,9 @@ jobs:
       shell: pwsh
       run: .\innosetupinstaller.exe /verysilent /currentuser /log=inno_setup_install_log.txt
       
-    - name: Print Inno Setup install log
-      shell: pwsh
-      run: cat inno_setup_install_log.txt
+    #- name: Print Inno Setup install log
+    #  shell: pwsh
+    #  run: cat inno_setup_install_log.txt
       
     - name: Generate Inno Setup Installer - 32 bit
       shell: pwsh

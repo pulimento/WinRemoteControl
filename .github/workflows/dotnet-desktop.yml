@@ -41,12 +41,12 @@ jobs:
         dotnet-version: 5.x
 
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.2
+    #- name: Setup MSBuild.exe
+    #  uses: microsoft/setup-msbuild@v1.0.2
 
     # Execute all unit tests in the solution
-    - name: Execute unit tests
-      run: dotnet test
+    #- name: Execute unit tests
+    #  run: dotnet test
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     #- name: Restore the application
@@ -55,24 +55,24 @@ jobs:
     #    abi: ${{ matrix.abi }}
     
     # Generate build artifacts
-    - name: Build the application for 32-bit
+    - name: Build the application - 32-bit
       run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.Win32 }}
     
-    - name: Build the application for 64-bit
-      run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.Win64 }}
+    #- name: Build the application - 64-bit
+    #  run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.Win64 }}
         
     # Upload published builds: https://github.com/marketplace/actions/upload-a-build-artifact
-    - name: Upload build artifacts - 32-bit
-      uses: actions/upload-artifact@v3
-      with:
-        name: 32-bit build
-        path: ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}
+    #- name: Upload build artifacts - 32-bit
+    #  uses: actions/upload-artifact@v3
+    #  with:
+    #    name: 32-bit build
+    #    path: ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}
         
-    - name: Upload build artifacts - 64-bit
-      uses: actions/upload-artifact@v3
-      with:
-        name: 64-bit build 
-        path: ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win64 }}
+    #- name: Upload build artifacts - 64-bit
+    #  uses: actions/upload-artifact@v3
+    #  with:
+    #    name: 64-bit build 
+    #    path: ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win64 }}
         
     # Inno-Setup
     - name: Download Inno Setup
@@ -81,7 +81,11 @@ jobs:
       
     - name: Install Inno Setup
       shell: pwsh
-      run: .\is.exe /verysilent /currentuser
+      run: .\is.exe /verysilent /currentuser /log=islog.txt
+      
+    - name: Print Inno Setup install log
+      shell: pwsh
+      run: cat islog.txt
       
     - name: Run Inno Setup script compiler
       shell: pwsh

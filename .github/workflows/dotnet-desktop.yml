@@ -89,7 +89,7 @@ jobs:
         .\GenerateInstaller.ps1
         -installerOutputPath '${{ github.workspace }}\${{ env.ArtifactsFolderName }}'
         -buildOutputPath ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}
-        -setupExecutableNameIncludingEXEExtension {{ env.Win32InstallerName }}
+        -setupExecutableNameIncludingEXEExtension ${{ env.Win32InstallerName }}
         -CsprojPath ${{ env.Csproj_Project_Path }}
 
     - name: Publish installer as artifact - 32-bit

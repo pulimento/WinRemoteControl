@@ -24,11 +24,11 @@ DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 OutputDir=C:\code\WinRemoteControl\Installer\Output
 OutputBaseFilename=WinRemoteControl_Setup
-SetupIconFile=C:\code\WinRemoteControl\WinRemoteControl\Resources\big_icon_5jt_icon.ico
 Compression=lzma2/max
 SolidCompression=yes
 WizardStyle=modern
 SourceDir=WinRemoteControl\WinRemoteControl\bin\Release\net5.0-windows\win-x64\publish
+SetupIconFile=C:\code\WinRemoteControl\WinRemoteControl\Resources\big_icon_5jt_icon.ico
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

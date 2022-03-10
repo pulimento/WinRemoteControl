@@ -115,5 +115,5 @@ jobs:
     - name: Publish installer as artifact - 64-bit
       uses: actions/upload-artifact@v3
       with:
-        name: Windows 32-bit setup
+        name: Windows 64-bit setup
         path: ${{ github.workspace }}\${{ env.ArtifactsFolderName }}\${{ env.Win64InstallerName }}*

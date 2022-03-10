@@ -18,7 +18,7 @@ param
   [Parameter(HelpMessage="Overrides build identifier, script tries to get it automatically")][string]$buildIdentifier,
   [string]$baseDirectory = "$PSScriptRoot",
   [string]$installerOutputPath = "Installer\Output",  
-  [string]$setupExecutableNameIncludingEXEExtension = "WinRemoteControl_Setup_32.exe"
+  [string]$setupExecutableName = "WinRemoteControl_Setup_32"
 )
 
 ################################################################
@@ -47,7 +47,6 @@ Set-Location $baseDirectory
 $installerFolderPath = Join-Path (Get-Location).Path "Installer"
 $innoSetupScriptPath = Resolve-Path (Join-Path $installerFolderPath "InstallerScript.iss")
 $innoSetupResourcesPath = Resolve-Path (Join-Path $installerFolderPath "InnoSetupResources")
-$baseSetupNameIncludingEXEExtension = "WinRemoteControl_Setup.exe"
 
 # Normalize installer output path
 #if(![System.IO.Path]::IsPathRooted($installerOutputPath))
@@ -72,7 +71,7 @@ LogDebug "Build source path        : $buildOutputPath"
 LogDebug "Inno Setup Script path   : $innoSetupScriptPath"
 LogDebug "Inno Setup Resources path: $innoSetupResourcesPath"
 LogDebug "Installer output         : $installerOutputPath"
-LogDebug "Setup EXE name           : $setupExecutableNameIncludingEXEExtension"
+LogDebug "Setup EXE name           : $setupExecutableName"
 LogDebug ".csproj path             : $CsprojPath"
 LogDebug "###############################################"
 
@@ -107,7 +106,7 @@ LogDebug "SourceDir $buildOutputPath"
 LogDebug "SetupIconFile $SetupIconFile"
 LogDebug "InnoSetupScriptPath $innoSetupScriptPath"
 
-& $innoSetupCompilerPath /DMyAppVersion="$buildIdentifier" /DMyOutputDir="$installerOutputPath" /DMySourceDir="$buildOutputPath" /DMySetupIconFile="$SetupIconFile" $innoSetupScriptPath 
+& $innoSetupCompilerPath /DMyAppVersion="$buildIdentifier" /DMyOutputDir="$installerOutputPath" /DMySourceDir="$buildOutputPath" /DMySetupIconFile="$SetupIconFile" $innoSetupScriptPath -DMyOutputBaseFileName="$setupExecutableName"
 if(-Not $?)
 {
     LogWarning "lastexitcode $lastexitcode"
@@ -115,25 +114,5 @@ if(-Not $?)
 }
 
 LogSection "END generating installer"
-
-################################################################
-##### STAGE: Change installer name
-################################################################
-
-LogSection "Changing installer name"
-
-if ($setupExecutableNameIncludingEXEExtension)
-{
-    $baseInstallerFullPath = Join-Path $installerOutputPath $baseSetupNameIncludingEXEExtension
-    $destinationInstallerFullPath = Join-Path $installerOutputPath $setupExecutableNameIncludingEXEExtension
-    LogDebug "Moving installer from: $baseInstallerFullPath to $destinationInstallerFullPath"
-    Move-Item -Force $baseInstallerFullPath -Destination $destinationInstallerFullPath
-}
-else 
-{
-  LogWarning "Setup executable name not provided, using default"  
-}
-
-LogSection "END Changing installer name"
 
 Pop-Location

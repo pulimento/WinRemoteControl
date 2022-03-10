@@ -2,17 +2,35 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 ;Remember that, when we're using /Dxx parameter to run the compiler, it emulates "#define", not variables!
+;All of this mess of #ifndef are because the compiler parameters defines it, but if it's already defined, it does not work
 
-#ifndef
+#ifndef MyAppName
 #define MyAppName "WinRemoteControl"
+#endif
+#ifndef MyAppVersion
 #define MyAppVersion "1.0.0"
+#endif
+#ifndef MyAppPublisher
 #define MyAppPublisher "pulimento"
+#endif
+#ifndef MyAppURL
 #define MyAppURL "https://github.com/pulimento"
+#endif
+#ifndef MyAppExeName
 #define MyAppExeName "WinRemoteControl.exe"
+#endif
+#ifndef MyOutputDir
 #define MyOutputDir "WinRemoteControl\Installer\Output"
+#endif
+#ifndef MyOutputBaseFileName
 #define MyOutputBaseFileName "WinRemoteControl_Setup"
+#endif
+#ifndef MySourceDir
 #define MySourceDir "WinRemoteControl\WinRemoteControl\bin\Release\net5.0-windows\win-x64\publish"
+#endif
+#ifndef MySetupIconFile
 #define MySetupIconFile "WinRemoteControl\WinRemoteControl\Resources\big_icon_5jt_icon.ico"
+#endif
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -46,8 +64,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 ;was in the previous line - Flags: unchecked
 
 [Files]
-Source: "{SourceDir}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{SourceDir}\*"; Excludes: "settings.json"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#MySourceDir}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MySourceDir}\*"; Excludes: "settings.json"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

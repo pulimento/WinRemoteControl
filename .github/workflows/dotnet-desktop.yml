@@ -17,8 +17,8 @@ env:
   Csproj_Subfolder: WinRemoteControl
   Win64: win-x64
   Win32: win-x86
-  Win64InstallerName: WinRemoteControl_Setup_64bit.exe
-  Win32InstallerName: WinRemoteControl_Setup_32bit.exe
+  Win64InstallerName: WinRemoteControl_Setup_64bit
+  Win32InstallerName: WinRemoteControl_Setup_32bit
   ArtifactsFolderName: "Artifacts"
 
 jobs:
@@ -87,10 +87,12 @@ jobs:
       # Note: Here we're using the 'folded' style in the [YAML Syntax](https://yaml-multiline.info/)
       run: >
         .\GenerateInstaller.ps1
-        -installerOutputPath '${{ github.workspace }}\${{ env.ArtifactsFolderName }}'
+        -pathsAreRelativeToBaseDirectory $false
         -buildOutputPath ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}
-        -setupExecutableNameIncludingEXEExtension ${{ env.Win32InstallerName }}
-        -CsprojPath ${{ env.Csproj_Project_Path }}
+        -CsprojPath ${{ github.workspace }}\${{ env.Csproj_Project_Path }}
+        -SetupIconFile ${{ github.workspace }}\${{ env.Csproj_Project_Path }}\Resources\big_icon_5jt_icon.ico
+        -installerOutputPath '${{ github.workspace }}\${{ env.ArtifactsFolderName }}'
+        -setupExecutableName ${{ env.Win32InstallerName }}        
 
     - name: Publish installer as artifact - 32-bit
       uses: actions/upload-artifact@v3

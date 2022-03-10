@@ -94,20 +94,26 @@ jobs:
         -installerOutputPath '${{ github.workspace }}\${{ env.ArtifactsFolderName }}'
         -setupExecutableName ${{ env.Win32InstallerName }}
 
-      - name: Generate Inno Setup Installer - 32 bit
+    - name: Generate Inno Setup Installer - 64 bit
       shell: pwsh
       # Note: Here we're using the 'folded' style in the [YAML Syntax](https://yaml-multiline.info/)
       run: >
         .\GenerateInstaller.ps1
         -pathsAreRelativeToBaseDirectory $false
-        -buildOutputPath ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}
+        -buildOutputPath ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win64 }}
         -CsprojPath ${{ github.workspace }}\${{ env.Csproj_Project_Path }}
         -SetupIconFile ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\Resources\big_icon_5jt_icon.ico
         -installerOutputPath '${{ github.workspace }}\${{ env.ArtifactsFolderName }}'
-        -setupExecutableName ${{ env.Win32InstallerName }}
+        -setupExecutableName ${{ env.Win64InstallerName }}
 
     - name: Publish installer as artifact - 32-bit
       uses: actions/upload-artifact@v3
       with:
         name: Windows 32-bit setup
         path: ${{ github.workspace }}\${{ env.ArtifactsFolderName }}\${{ env.Win32InstallerName }}
+
+    - name: Publish installer as artifact - 64-bit
+      uses: actions/upload-artifact@v3
+      with:
+        name: Windows 32-bit setup
+        path: ${{ github.workspace }}\${{ env.ArtifactsFolderName }}\${{ env.Win64InstallerName }}

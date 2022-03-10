@@ -22,7 +22,7 @@ DefaultDirName={userappdata}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
-OutputDir=C:\code\WinRemoteControl\Installer\Output
+OutputDir=WinRemoteControl\Installer\Output
 OutputBaseFilename=WinRemoteControl_Setup
 Compression=lzma2/max
 SolidCompression=yes

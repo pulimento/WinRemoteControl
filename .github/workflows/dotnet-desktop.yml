@@ -1,0 +1,119 @@
+# In this pipeline, I'm repeating steps for x64 and x86.
+# Could be done with a matrix configuration, but I don't want to repeat some stages (such as checkout, install dotnet, etc...)
+
+name: Generate installers
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+    
+env:
+  Framework: net5.0-windows
+  Configuration: Release
+  Solution_Name: WinRemoteControl.sln
+  Csproj_Project_Path: WinRemoteControl\WinRemoteControl.csproj
+  Csproj_Subfolder: WinRemoteControl
+  Win64: win-x64
+  Win32: win-x86
+  Win64InstallerName: WinRemoteControl_Setup_64bit
+  Win32InstallerName: WinRemoteControl_Setup_32bit
+  ArtifactsFolderName: "Artifacts"
+
+jobs:
+
+  build:  
+    runs-on: windows-2022
+    steps:
+    
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.x
+
+    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    #- name: Setup MSBuild.exe
+    #  uses: microsoft/setup-msbuild@v1.0.2
+
+    # Execute all unit tests in the solution
+    #- name: Execute unit tests
+    #  run: dotnet test
+    
+    # Generate build artifacts
+    - name: Build the application - 32-bit
+      run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.Win32 }}
+    
+    - name: Build the application - 64-bit
+      run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.Win64 }}
+        
+    # Upload published builds: https://github.com/marketplace/actions/upload-a-build-artifact
+    #- name: Upload build artifacts - 32-bit
+    #  uses: actions/upload-artifact@v3
+    #  with:
+    #    name: 32-bit build
+    #    path: ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}
+        
+    #- name: Upload build artifacts - 64-bit
+    #  uses: actions/upload-artifact@v3
+    #  with:
+    #    name: 64-bit build 
+    #    path: ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win64 }}
+
+    - name: Create Artifacts Folder
+      run: New-Item -Path '${{ github.workspace }}' -Name '${{ env.ArtifactsFolderName }}' -ItemType "directory"
+
+    # Inno-Setup
+    - name: Download Inno Setup
+      shell: pwsh
+      run: Invoke-WebRequest -Uri "https://jrsoftware.org/download.php/is.exe?site=1" -OutFile .\innosetupinstaller.exe
+      
+    - name: Install Inno Setup
+      shell: pwsh
+      run: .\innosetupinstaller.exe /verysilent /currentuser /log=inno_setup_install_log.txt
+      
+    #- name: Print Inno Setup install log
+    #  shell: pwsh
+    #  run: cat inno_setup_install_log.txt
+      
+    - name: Generate Inno Setup Installer - 32 bit
+      shell: pwsh
+      # Note: Here we're using the 'folded' style in the [YAML Syntax](https://yaml-multiline.info/)
+      run: >
+        .\GenerateInstaller.ps1
+        -pathsAreRelativeToBaseDirectory $false
+        -buildOutputPath ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}
+        -CsprojPath ${{ github.workspace }}\${{ env.Csproj_Project_Path }}
+        -SetupIconFile ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\Resources\big_icon_5jt_icon.ico
+        -installerOutputPath '${{ github.workspace }}\${{ env.ArtifactsFolderName }}'
+        -setupExecutableName ${{ env.Win32InstallerName }}
+
+    - name: Generate Inno Setup Installer - 64 bit
+      shell: pwsh
+      # Note: Here we're using the 'folded' style in the [YAML Syntax](https://yaml-multiline.info/)
+      run: >
+        .\GenerateInstaller.ps1
+        -pathsAreRelativeToBaseDirectory $false
+        -buildOutputPath ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win64 }}
+        -CsprojPath ${{ github.workspace }}\${{ env.Csproj_Project_Path }}
+        -SetupIconFile ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\Resources\big_icon_5jt_icon.ico
+        -installerOutputPath '${{ github.workspace }}\${{ env.ArtifactsFolderName }}'
+        -setupExecutableName ${{ env.Win64InstallerName }}
+
+    - name: Publish installer as artifact - 32-bit
+      uses: actions/upload-artifact@v3
+      with:
+        name: Windows 32-bit setup
+        path: ${{ github.workspace }}\${{ env.ArtifactsFolderName }}\${{ env.Win32InstallerName }}*
+
+    - name: Publish installer as artifact - 64-bit
+      uses: actions/upload-artifact@v3
+      with:
+        name: Windows 64-bit setup
+        path: ${{ github.workspace }}\${{ env.ArtifactsFolderName }}\${{ env.Win64InstallerName }}*

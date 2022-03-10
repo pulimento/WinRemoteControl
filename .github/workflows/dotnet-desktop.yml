@@ -90,7 +90,7 @@ jobs:
         -pathsAreRelativeToBaseDirectory $false
         -buildOutputPath ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}
         -CsprojPath ${{ github.workspace }}\${{ env.Csproj_Project_Path }}
-        -SetupIconFile ${{ github.workspace }}\${{ env.Csproj_Project_Path }}\Resources\big_icon_5jt_icon.ico
+        -SetupIconFile ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\Resources\big_icon_5jt_icon.ico
         -installerOutputPath '${{ github.workspace }}\${{ env.ArtifactsFolderName }}'
         -setupExecutableName ${{ env.Win32InstallerName }}        
 

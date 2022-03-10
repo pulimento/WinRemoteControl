@@ -11,12 +11,14 @@
 
 param
 (
+  [Parameter(HelpMessage="If true, it can be used to create local builds")][bool]$pathsAreRelativeToBaseDirectory = $false,
+  [string]$buildOutputPath = "WinRemoteControl\bin\Release\net5.0-windows\win-x86\publish",
+  [string]$CsprojPath = "WinRemoteControl\WinRemoteControl.csproj",
+  [string]$SetupIconFile = "WinRemoteControl\Resources\big_icon_5jt_icon.ico",
   [Parameter(HelpMessage="Overrides build identifier, script tries to get it automatically")][string]$buildIdentifier,
   [string]$baseDirectory = "$PSScriptRoot",
-  [string]$installerOutputPath = "Installer\Output",
-  [Parameter(mandatory=$true)][string]$buildOutputPath = "WinRemoteControl\bin\Release\net5.0-windows\win-x86\publish",
-  [string]$setupExecutableNameIncludingEXEExtension = "WinRemoteControl_Setup_32.exe",
-  [string]$CsprojPath = ".\WinRemoteControl\WinRemoteControl.csproj"
+  [string]$installerOutputPath = "Installer\Output",  
+  [string]$setupExecutableNameIncludingEXEExtension = "WinRemoteControl_Setup_32.exe"
 )
 
 ################################################################
@@ -48,9 +50,17 @@ $innoSetupResourcesPath = Resolve-Path (Join-Path $installerFolderPath "InnoSetu
 $baseSetupNameIncludingEXEExtension = "WinRemoteControl_Setup.exe"
 
 # Normalize installer output path
-if(![System.IO.Path]::IsPathRooted($installerOutputPath))
+#if(![System.IO.Path]::IsPathRooted($installerOutputPath))
+#{
+#  $installerOutputPath = Join-Path (Get-Location).Path $installerOutputPath
+#}
+
+if($pathsAreRelativeToBaseDirectory)
 {
-  $installerOutputPath = Join-Path (Get-Location).Path $installerOutputPath
+  $buildOutputPath = Join-Path $baseDirectory $buildOutputPath
+  $CsprojPath = Join-Path $baseDirectory $CsprojPath
+  $SetupIconFile = Join-Path $baseDirectory $SetupIconFile
+  $installerOutputPath = Join-Path $baseDirectory $installerOutputPath
 }
 
 ############################################################################################################################################
@@ -90,10 +100,14 @@ LogSection "END Pre-compilation tasks"
 
 LogSection "START generating installer"
 
-LogDebug "innoSetupCompilerPath $innoSetupCompilerPath"
-LogDebug "buildIdentifier $buildIdentifier"
+LogDebug "InnoSetupCompilerPath $innoSetupCompilerPath"
+LogDebug "BuildIdentifier $buildIdentifier"
+LogDebug "OutputDir $installerOutputPath"
+LogDebug "SourceDir $buildOutputPath"
+LogDebug "SetupIconFile $SetupIconFile"
+LogDebug "InnoSetupScriptPath $innoSetupScriptPath"
 
-& $innoSetupCompilerPath -DAppVersion="$buildIdentifier" -DOutputDir="$installerOutputPath" -DSourceDir="$buildOutputPath" $innoSetupScriptPath
+& $innoSetupCompilerPath /DMyAppVersion="$buildIdentifier" /DMyOutputDir="$installerOutputPath" /DMySourceDir="$buildOutputPath" /DMySetupIconFile="$SetupIconFile" $innoSetupScriptPath 
 if(-Not $?)
 {
     LogWarning "lastexitcode $lastexitcode"
@@ -114,6 +128,10 @@ if ($setupExecutableNameIncludingEXEExtension)
     $destinationInstallerFullPath = Join-Path $installerOutputPath $setupExecutableNameIncludingEXEExtension
     LogDebug "Moving installer from: $baseInstallerFullPath to $destinationInstallerFullPath"
     Move-Item -Force $baseInstallerFullPath -Destination $destinationInstallerFullPath
+}
+else 
+{
+  LogWarning "Setup executable name not provided, using default"  
 }
 
 LogSection "END Changing installer name"

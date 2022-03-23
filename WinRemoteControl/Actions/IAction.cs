@@ -2,7 +2,7 @@
 
 namespace WinRemoteControl.Actions
 {
-    interface IAction
+    public interface IAction
     {
         public Result DoAction();
     }

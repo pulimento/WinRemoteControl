@@ -24,4 +24,7 @@ static class Constants
         "https://raw.githubusercontent.com/pulimento/WinRemoteControl/feature/net-6-and-auto-updater/updater/latestversion_win32.json";
     public const string UPDATE_URL_WIN64 =
         "https://raw.githubusercontent.com/pulimento/WinRemoteControl/feature/net-6-and-auto-updater/updater/latestversion_win64.json";
+
+    // Misc
+    public const string REPO_URL = "https://github.com/pulimento/WinRemoteControl";
 }

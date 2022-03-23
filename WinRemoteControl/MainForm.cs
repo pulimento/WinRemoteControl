@@ -74,6 +74,12 @@ namespace WinRemoteControl
             DoClientStart();
         }
 
+        private void BtnAbout_Click(object sender, EventArgs e)
+        {
+            var aboutForm = new AboutForm();
+            aboutForm.Show();
+        }
+
         #endregion
 
         #region Client management

@@ -2,7 +2,7 @@
 
 namespace WinRemoteControl.Updater;
 
-internal class Updater
+public static class AppUpdater
 {
     public static void CheckForUpdates()
     {

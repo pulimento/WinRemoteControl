@@ -1,6 +1,5 @@
 ﻿using FluentResults;
 using System.Runtime.InteropServices;
-using Serilog;
 
 namespace WinRemoteControl.Actions;
 

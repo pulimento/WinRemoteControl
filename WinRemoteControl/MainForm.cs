@@ -17,35 +17,39 @@ namespace WinRemoteControl
     public partial class MainForm : Form
     {
         private IManagedMqttClient? mqttClient;
-
-        private MqttTopicFilter[] topicsToSubscribe = {
-            new MqttTopicFilter { Topic =  Constants.TOPIC_TOGGLE_TEAMS_MUTE },
-            new MqttTopicFilter { Topic =  Constants.TOPIC_VOLUME_UP },
-            new MqttTopicFilter { Topic =  Constants.TOPIC_VOLUME_DOWN }
-        };
+        private readonly Dictionary<string, IAction> topicsAndActions;
 
         public MainForm()
         { 
             SetupLog();
             InitializeComponent();
             SetEventListeners();
+            topicsAndActions = SetupTopicsAndActions();
 
             Log.Information("Application started");            
         }
 
+        public Dictionary<string, IAction> SetupTopicsAndActions()
+        {
+            return new Dictionary<string, IAction>() {
+                { Constants.TOPIC_TOGGLE_TEAMS_MUTE , new ToggleMuteTeamsAction() },
+                { Constants.TOPIC_VOLUME_UP , new VolumeDownAction(this) },
+                { Constants.TOPIC_VOLUME_DOWN , new VolumeDownAction(this) },
+                { Constants.TOPIC_MEDIA_NEXT_SONG , new MediaNextSongAction() },
+                { Constants.TOPIC_MEDIA_PREV_SONG , new MediaPrevSongAction() },
+            };
+        }
+
         private void DoActionForTopic(string topic, string payload)
         {
-            if (topic == Constants.TOPIC_TOGGLE_TEAMS_MUTE)
+            IAction action = topicsAndActions[topic];
+            if (action != null)
             {
-                new ToggleMuteTeamsAction().DoAction();
-            }
-            else if (topic == Constants.TOPIC_VOLUME_UP)
+                action.DoAction();
+            } 
+            else
             {
-                new VolumeUpAction(this).DoAction();
-            }
-            else if (topic == Constants.TOPIC_VOLUME_DOWN)
-            {
-                new VolumeDownAction(this).DoAction();
+                Log.Warning("Error doing action for topic, topic received is not a known one");
             }
         }
 
@@ -129,10 +133,11 @@ namespace WinRemoteControl
             Log.Information($"MQTT client connected - {item}");
 
             // Subscribe to topics
-            Log.Information($"About to subscribe to topics: [{string.Join(",", topicsToSubscribe.Select(t => t.Topic))}]");
+            Log.Information($"About to subscribe to topics: [{string.Join(",", topicsAndActions.Keys)}]");
+            List<MqttTopicFilter> filtersToSubscribe = topicsAndActions.Keys.Select(topic => new MqttTopicFilter { Topic = topic }).ToList();
             if (this.mqttClient != null)
             {
-                await this.mqttClient.SubscribeAsync(topicsToSubscribe);
+                await this.mqttClient.SubscribeAsync(filtersToSubscribe);
             }
             else
             {

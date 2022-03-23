@@ -10,7 +10,7 @@ on:
     branches: [ master ]
     
 env:
-  Framework: net5.0-windows
+  Framework: net6.0-windows
   Configuration: Release
   Solution_Name: WinRemoteControl.sln
   Csproj_Project_Path: WinRemoteControl\WinRemoteControl.csproj

@@ -1,15 +1,8 @@
-﻿using FluentResults;
-using MQTTnet;
+﻿using MQTTnet;
 using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Disconnecting;
 using MQTTnet.Extensions.ManagedClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using WinRemoteControl.Actions;
-using Serilog;
 using WinRemoteControl.LoggerExtensions;
 
 namespace WinRemoteControl
@@ -20,13 +13,19 @@ namespace WinRemoteControl
         private readonly Dictionary<string, IAction> topicsAndActions;
 
         public MainForm()
-        { 
-            SetupLog();
+        {            
             InitializeComponent();
+            this.Load += new EventHandler(this.MainForm_Load);
+            LoggerHelper.SetupNONUILogger();
             SetEventListeners();
             topicsAndActions = SetupTopicsAndActions();
 
             Log.Information("Application started");            
+        }
+
+        public void MainForm_Load(object? sender, EventArgs e) 
+        {
+            LoggerHelper.SetupCompleteLogger(this);
         }
 
         public Dictionary<string, IAction> SetupTopicsAndActions()
@@ -65,7 +64,7 @@ namespace WinRemoteControl
             var result = Config.ExploreSettingsFile();
             if (result.IsFailed)
             {
-                Log.Error($"Error opening settings: {ResultErrorsToString(result.Errors)}");
+                Log.Error($"Error opening settings: {LoggerHelper.ResultErrorsToString(result.Errors)}");
             }
         }
 
@@ -89,7 +88,7 @@ namespace WinRemoteControl
             var checkSettingsResult = Config.CheckSettingsFile();
             if (checkSettingsResult.IsFailed)
             {
-                Log.Error($"Error checking settings: {ResultErrorsToString(checkSettingsResult.Errors)}");
+                Log.Error($"Error checking settings: {LoggerHelper.ResultErrorsToString(checkSettingsResult.Errors)}");
                 return;
             }
 
@@ -117,7 +116,7 @@ namespace WinRemoteControl
             var clientConfig = Config.LoadClientConfigFromFile();
             if (clientConfig.IsFailed)
             {
-                Log.Error($"Error loading settings: {ResultErrorsToString(checkSettingsResult.Errors)}");
+                Log.Error($"Error loading settings: {LoggerHelper.ResultErrorsToString(checkSettingsResult.Errors)}");
             }
             else
             {
@@ -202,46 +201,6 @@ namespace WinRemoteControl
         private void btnGoToBackground_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
-        }
-
-        #endregion
-
-        #region Utilities
-
-        /*
-        private void Log(string tag, string message, bool logToTextBox = true)
-        {
-            var lineToLog = $"{DateTime.Now:MM/dd/yy H:mm:ss.fff} # {tag} # {message}";
-            Debug.WriteLine(lineToLog);
-            if (logToTextBox)
-            {
-                this.BeginInvoke((MethodInvoker)delegate
-                {
-                    this.textBoxLog.AppendText(lineToLog + Environment.NewLine);
-                });
-            }
-        }
-        */        
-
-        private void SetupLog()
-        {
-            var outputTemplate =
-                "{Timestamp:MM/dd/yy H:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}";
-
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
-                .WriteTo.Console(outputTemplate: outputTemplate)
-                .WriteTo.Debug(outputTemplate: outputTemplate)
-                .WriteTo.File("logs/log.txt", 
-                    rollingInterval: RollingInterval.Month,
-                    outputTemplate: outputTemplate)
-                .WriteTo.WindowsFormsSink(this, outputTemplate: outputTemplate)
-                .CreateLogger();
-        }
-
-        private string ResultErrorsToString(List<IError> e)
-        {
-            return string.Join(",", e.Select(e => e.Message));
         }
 
         #endregion

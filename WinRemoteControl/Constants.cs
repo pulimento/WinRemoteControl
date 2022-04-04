@@ -21,9 +21,9 @@ static class Constants
 
     // App updater
     public const string UPDATE_URL_WIN32 = 
-        "https://raw.githubusercontent.com/pulimento/WinRemoteControl/feature/net-6-and-auto-updater/updater/latestversion_win32.json";
+        "https://raw.githubusercontent.com/pulimento/WinRemoteControl/feature/net-6-and-auto-updater/updater/latestversion_win32.xml";
     public const string UPDATE_URL_WIN64 =
-        "https://raw.githubusercontent.com/pulimento/WinRemoteControl/feature/net-6-and-auto-updater/updater/latestversion_win64.json";
+        "https://raw.githubusercontent.com/pulimento/WinRemoteControl/feature/net-6-and-auto-updater/updater/latestversion_win64.xml";
 
     // Misc
     public const string REPO_URL = "https://github.com/pulimento/WinRemoteControl";

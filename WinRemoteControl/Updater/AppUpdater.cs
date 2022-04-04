@@ -2,14 +2,15 @@
 
 namespace WinRemoteControl.Updater;
 
-public static class AppUpdater
+public class AppUpdater
 {
-    public static void CheckForUpdates()
+    public static void CheckForUpdates(AutoUpdater.CheckForUpdateEventHandler updateEventHandler)
     {
         string updaterURL = Environment.Is64BitProcess ?
             Constants.UPDATE_URL_WIN64 :
             Constants.UPDATE_URL_WIN32;
 
-        AutoUpdater.Start(updaterURL);
+        AutoUpdater.CheckForUpdateEvent += updateEventHandler;
+        AutoUpdater.Start(updaterURL);       
     }
 }

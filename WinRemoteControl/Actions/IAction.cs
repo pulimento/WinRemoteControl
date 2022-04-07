@@ -1,9 +1,8 @@
 ﻿using FluentResults;
 
-namespace WinRemoteControl.Actions
+namespace WinRemoteControl.Actions;
+
+public interface IAction
 {
-    public interface IAction
-    {
-        public Result DoAction();
-    }
+    public Result DoAction();
 }

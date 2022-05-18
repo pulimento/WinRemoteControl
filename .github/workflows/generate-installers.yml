@@ -42,10 +42,10 @@ jobs:
     
     # Generate build artifacts
     - name: Build application - 32-bit
-      run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.Win32 }}
+      run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.Win32 }} --self-contained
     
     - name: Build application - 64-bit
-      run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.Win64 }}
+      run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.Win64 }} --self-contained
         
     # Upload published builds: https://github.com/marketplace/actions/upload-a-build-artifact
     #- name: Upload build artifacts - 32-bit

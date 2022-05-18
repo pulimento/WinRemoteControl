@@ -15,7 +15,7 @@ param
   [string]$buildOutputPath = "WinRemoteControl\bin\Release\net6.0-windows\win-x86\publish",
   [string]$CsprojPath = "WinRemoteControl\WinRemoteControl.csproj",
   [string]$SetupIconFile = "WinRemoteControl\Resources\big_icon_5jt_icon.ico",
-  [Parameter(HelpMessage="Overrides build identifier, script tries to get it automatically")][Version]$buildIdentifier,
+  [Parameter(HelpMessage="Overrides build identifier, script tries to get it automatically")]$buildIdentifier,
   [string]$baseDirectory = "$PSScriptRoot",
   [string]$installerOutputPath = "Installer\Output",  
   [string]$setupExecutableName = "WinRemoteControl_Setup_32"
@@ -47,12 +47,6 @@ Set-Location $baseDirectory
 $installerFolderPath = Join-Path (Get-Location).Path "Installer"
 $innoSetupScriptPath = Resolve-Path (Join-Path $installerFolderPath "InstallerScript.iss")
 $innoSetupResourcesPath = Resolve-Path (Join-Path $installerFolderPath "InnoSetupResources")
-
-# Normalize installer output path
-#if(![System.IO.Path]::IsPathRooted($installerOutputPath))
-#{
-#  $installerOutputPath = Join-Path (Get-Location).Path $installerOutputPath
-#}
 
 if($pathsAreRelativeToBaseDirectory)
 {
@@ -88,8 +82,12 @@ if (-Not (Test-Path $innoSetupCompilerPath))
 }
 
 # Get version from csproj
-$xml = [Xml] (Get-Content $CsprojPath)
-$buildIdentifier = [Version] $xml.Project.PropertyGroup.Version
+if($null -eq $buildIdentifier ) 
+{
+  LogDebug "Build identifier not set, try to obtain it from .csproj"
+  $xml = [Xml] (Get-Content $CsprojPath)
+  $buildIdentifier = [version] $xml.Project.PropertyGroup[1].Version
+}
 
 LogSection "END Pre-compilation tasks"
 

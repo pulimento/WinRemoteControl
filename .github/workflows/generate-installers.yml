@@ -6,8 +6,6 @@ name: Generate installers
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
     
 env:
   Framework: net6.0-windows
@@ -36,21 +34,17 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.x
-
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    #- name: Setup MSBuild.exe
-    #  uses: microsoft/setup-msbuild@v1.0.2
+        dotnet-version: 6.x
 
     # Execute all unit tests in the solution
     #- name: Execute unit tests
     #  run: dotnet test
     
     # Generate build artifacts
-    - name: Build the application - 32-bit
+    - name: Build application - 32-bit
       run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.Win32 }}
     
-    - name: Build the application - 64-bit
+    - name: Build application - 64-bit
       run: dotnet publish ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }} -r ${{ env.Win64 }}
         
     # Upload published builds: https://github.com/marketplace/actions/upload-a-build-artifact

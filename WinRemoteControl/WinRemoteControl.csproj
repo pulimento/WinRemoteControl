@@ -1,28 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
-	<Nullable>Enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <PackageProjectUrl>https://github.com/pulimento</PackageProjectUrl>
-    <PackageIcon>big_icon.png</PackageIcon>
-    <PackageIconUrl />
-    <ApplicationIcon>big_icon_5jt_icon.ico</ApplicationIcon>
-    <AssemblyName>WinRemoteControl</AssemblyName>
-    <RootNamespace>WinRemoteControl</RootNamespace>
-    <Authors>pulimento @ github</Authors>
-    <Company />
-    <Product />
-    <RepositoryUrl>https://github.com/pulimento</RepositoryUrl>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
-    <Version>1.0.2</Version>
-    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<Nullable>Enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
+	<PropertyGroup>
+		<PackageProjectUrl>https://github.com/pulimento</PackageProjectUrl>
+		<PackageIcon>big_icon.png</PackageIcon>
+		<PackageIconUrl />
+		<ApplicationIcon>big_icon_5jt_icon.ico</ApplicationIcon>
+		<AssemblyName>WinRemoteControl</AssemblyName>
+		<RootNamespace>WinRemoteControl</RootNamespace>
+		<Authors>pulimento @ github</Authors>
+		<Company />
+		<Product />
+		<RepositoryUrl>https://github.com/pulimento</RepositoryUrl>
+		<Version>1.0.2</Version>
+		<PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+	</PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autoupdater.NET.Official" Version="1.7.0" />
     <PackageReference Include="FluentResults" Version="3.2.0" />
     <PackageReference Include="MQTTnet" Version="3.1.2" />
     <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.1.2" />
@@ -40,6 +42,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Settings\AppUserSettings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AppUserSettings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Settings\AppUserSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>AppUserSettings.Designer.cs</LastGenOutput>
+    </None>
     <None Update="settings_example.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

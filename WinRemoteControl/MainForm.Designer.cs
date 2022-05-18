@@ -39,6 +39,8 @@ namespace WinRemoteControl
             this.btnGoToBackground = new System.Windows.Forms.Button();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.btnOpenSettings = new System.Windows.Forms.Button();
+            this.BtnAbout = new System.Windows.Forms.Button();
+            this.btnSettings = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnMute
@@ -93,11 +95,35 @@ namespace WinRemoteControl
             this.btnOpenSettings.Text = "Open settings file";
             this.btnOpenSettings.UseVisualStyleBackColor = true;
             // 
+            // BtnAbout
+            // 
+            this.BtnAbout.Location = new System.Drawing.Point(662, 8);
+            this.BtnAbout.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.BtnAbout.Name = "BtnAbout";
+            this.BtnAbout.Size = new System.Drawing.Size(75, 23);
+            this.BtnAbout.TabIndex = 6;
+            this.BtnAbout.Text = "About";
+            this.BtnAbout.UseVisualStyleBackColor = true;
+            this.BtnAbout.Click += new System.EventHandler(this.BtnAbout_Click);
+            // 
+            // btnSettings
+            // 
+            this.btnSettings.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.btnSettings.Location = new System.Drawing.Point(132, 8);
+            this.btnSettings.Name = "btnSettings";
+            this.btnSettings.Size = new System.Drawing.Size(114, 22);
+            this.btnSettings.TabIndex = 7;
+            this.btnSettings.Text = "Open config";
+            this.btnSettings.UseVisualStyleBackColor = true;
+            this.btnSettings.Click += new System.EventHandler(this.BtnSettings_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(830, 397);
+            this.Controls.Add(this.btnSettings);
+            this.Controls.Add(this.BtnAbout);
             this.Controls.Add(this.btnOpenSettings);
             this.Controls.Add(this.btnGoToBackground);
             this.Controls.Add(this.textBoxLog);
@@ -132,6 +158,8 @@ namespace WinRemoteControl
         }
 
         private Button btnOpenSettings;
+        private Button BtnAbout;
+        private Button btnSettings;
     }
 }
 

@@ -4,6 +4,7 @@ using MQTTnet.Client.Disconnecting;
 using MQTTnet.Extensions.ManagedClient;
 using WinRemoteControl.Actions;
 using WinRemoteControl.LoggerExtensions;
+using WinRemoteControl.Settings;
 
 namespace WinRemoteControl
 {

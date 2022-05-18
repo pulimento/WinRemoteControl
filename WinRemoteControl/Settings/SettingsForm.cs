@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -36,6 +37,8 @@ namespace WinRemoteControl
                 AppUserSettings.Default.LAUNCH_AT_LOGON = newValue;
                 AppUserSettings.Default.Save();
                 Log.Debug($"Updating config: {nameof(AppUserSettings.LAUNCH_AT_LOGON)}, new value: {newValue}");
+
+                SetStartupAtLogon(newValue);
             } 
             else
             {
@@ -57,6 +60,38 @@ namespace WinRemoteControl
             {
                 Log.Error($"Error setting config value: {nameof(AppUserSettings.AUTO_CONNECT_AT_STARTUP)}");
             }
+        }
+
+        private void SetStartupAtLogon(bool runAtStartup)
+        {
+            const string RegistryRunKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+            string SubKey = Application.ProductName;
+            using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(RegistryRunKey, true))
+            {
+                if(key == null)
+                {
+                    // Key does not exist. Strange(!)
+                    Log.Error("Error trying to set the app to start at logon: Registry key does not exist");
+                    return;
+                }
+
+                // Get rid of that nullable variable
+                var RunKey = key!;
+
+                if (runAtStartup)
+                {
+                    // Add registry key                
+                    RunKey.SetValue(SubKey, Application.ExecutablePath.ToString());
+                }
+                else
+                {
+                    if (RunKey.GetValueNames().Contains(SubKey))
+                    {
+                        RunKey.DeleteValue(SubKey);
+                    }                    
+                }
+                RunKey.Close();
+            }            
         }
     }
 }

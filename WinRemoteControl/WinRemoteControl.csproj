@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="AppUserSettings.Designer.cs">
+    <Compile Update="Settings\AppUserSettings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
       <DependentUpon>AppUserSettings.settings</DependentUpon>
@@ -50,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="AppUserSettings.settings">
+    <None Update="Settings\AppUserSettings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>AppUserSettings.Designer.cs</LastGenOutput>
     </None>

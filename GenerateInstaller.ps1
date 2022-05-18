@@ -12,10 +12,10 @@
 param
 (
   [Parameter(HelpMessage="If true, it can be used to create local builds")][bool]$pathsAreRelativeToBaseDirectory = $false,
-  [string]$buildOutputPath = "WinRemoteControl\bin\Release\net5.0-windows\win-x86\publish",
+  [string]$buildOutputPath = "WinRemoteControl\bin\Release\net6.0-windows\win-x86\publish",
   [string]$CsprojPath = "WinRemoteControl\WinRemoteControl.csproj",
   [string]$SetupIconFile = "WinRemoteControl\Resources\big_icon_5jt_icon.ico",
-  [Parameter(HelpMessage="Overrides build identifier, script tries to get it automatically")][string]$buildIdentifier,
+  [Parameter(HelpMessage="Overrides build identifier, script tries to get it automatically")][Version]$buildIdentifier,
   [string]$baseDirectory = "$PSScriptRoot",
   [string]$installerOutputPath = "Installer\Output",  
   [string]$setupExecutableName = "WinRemoteControl_Setup_32"

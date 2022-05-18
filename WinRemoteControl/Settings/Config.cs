@@ -4,7 +4,7 @@ using MQTTnet.Extensions.ManagedClient;
 using System.Reflection;
 using System.Text.Json;
 
-namespace WinRemoteControl;
+namespace WinRemoteControl.Settings;
 
 public class Config
 {
@@ -176,7 +176,7 @@ public class Config
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(this.ClientID, this.TCPServerIP, this.TCPServerPort, this.TCPServerUsername, 
+            return HashCode.Combine(this.ClientID, this.TCPServerIP, this.TCPServerPort, this.TCPServerUsername,
                 this.TCPServerPassword, this.CommunicationTimeoutInMinutes, this.AutoReconnectDelayInSeconds);
         }
     }

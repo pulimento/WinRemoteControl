@@ -40,45 +40,42 @@ namespace WinRemoteControl
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.btnOpenSettings = new System.Windows.Forms.Button();
             this.BtnAbout = new System.Windows.Forms.Button();
+            this.btnSettings = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnMute
             // 
-            this.btnMute.Location = new System.Drawing.Point(310, 11);
-            this.btnMute.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnMute.Location = new System.Drawing.Point(271, 8);
             this.btnMute.Name = "btnMute";
-            this.btnMute.Size = new System.Drawing.Size(160, 40);
+            this.btnMute.Size = new System.Drawing.Size(140, 30);
             this.btnMute.TabIndex = 0;
             this.btnMute.Text = "Toggle Teams Mute";
             this.btnMute.UseVisualStyleBackColor = true;
             // 
             // btnStartClient
             // 
-            this.btnStartClient.Location = new System.Drawing.Point(482, 11);
-            this.btnStartClient.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnStartClient.Location = new System.Drawing.Point(422, 8);
             this.btnStartClient.Name = "btnStartClient";
-            this.btnStartClient.Size = new System.Drawing.Size(160, 40);
+            this.btnStartClient.Size = new System.Drawing.Size(140, 30);
             this.btnStartClient.TabIndex = 2;
             this.btnStartClient.Text = "Start listening";
             this.btnStartClient.UseVisualStyleBackColor = true;
             // 
             // textBoxLog
             // 
-            this.textBoxLog.Location = new System.Drawing.Point(14, 64);
-            this.textBoxLog.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.textBoxLog.Location = new System.Drawing.Point(12, 48);
             this.textBoxLog.Multiline = true;
             this.textBoxLog.Name = "textBoxLog";
             this.textBoxLog.PlaceholderText = "Ready to start";
             this.textBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxLog.Size = new System.Drawing.Size(921, 448);
+            this.textBoxLog.Size = new System.Drawing.Size(806, 337);
             this.textBoxLog.TabIndex = 3;
             // 
             // btnGoToBackground
             // 
-            this.btnGoToBackground.Location = new System.Drawing.Point(849, 11);
-            this.btnGoToBackground.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnGoToBackground.Location = new System.Drawing.Point(743, 8);
             this.btnGoToBackground.Name = "btnGoToBackground";
-            this.btnGoToBackground.Size = new System.Drawing.Size(86, 31);
+            this.btnGoToBackground.Size = new System.Drawing.Size(75, 23);
             this.btnGoToBackground.TabIndex = 4;
             this.btnGoToBackground.Text = "To tray";
             this.btnGoToBackground.UseVisualStyleBackColor = true;
@@ -91,29 +88,41 @@ namespace WinRemoteControl
             // btnOpenSettings
             // 
             this.btnOpenSettings.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnOpenSettings.Location = new System.Drawing.Point(14, 11);
-            this.btnOpenSettings.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnOpenSettings.Location = new System.Drawing.Point(12, 8);
             this.btnOpenSettings.Name = "btnOpenSettings";
-            this.btnOpenSettings.Size = new System.Drawing.Size(130, 29);
+            this.btnOpenSettings.Size = new System.Drawing.Size(114, 22);
             this.btnOpenSettings.TabIndex = 5;
             this.btnOpenSettings.Text = "Open settings file";
             this.btnOpenSettings.UseVisualStyleBackColor = true;
             // 
             // BtnAbout
             // 
-            this.BtnAbout.Location = new System.Drawing.Point(757, 10);
+            this.BtnAbout.Location = new System.Drawing.Point(662, 8);
+            this.BtnAbout.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.BtnAbout.Name = "BtnAbout";
-            this.BtnAbout.Size = new System.Drawing.Size(86, 31);
+            this.BtnAbout.Size = new System.Drawing.Size(75, 23);
             this.BtnAbout.TabIndex = 6;
             this.BtnAbout.Text = "About";
             this.BtnAbout.UseVisualStyleBackColor = true;
             this.BtnAbout.Click += new System.EventHandler(this.BtnAbout_Click);
             // 
+            // btnSettings
+            // 
+            this.btnSettings.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.btnSettings.Location = new System.Drawing.Point(132, 8);
+            this.btnSettings.Name = "btnSettings";
+            this.btnSettings.Size = new System.Drawing.Size(114, 22);
+            this.btnSettings.TabIndex = 7;
+            this.btnSettings.Text = "Open config";
+            this.btnSettings.UseVisualStyleBackColor = true;
+            this.btnSettings.Click += new System.EventHandler(this.BtnSettings_Click);
+            // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(949, 529);
+            this.ClientSize = new System.Drawing.Size(830, 397);
+            this.Controls.Add(this.btnSettings);
             this.Controls.Add(this.BtnAbout);
             this.Controls.Add(this.btnOpenSettings);
             this.Controls.Add(this.btnGoToBackground);
@@ -122,7 +131,6 @@ namespace WinRemoteControl
             this.Controls.Add(this.btnMute);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "MainForm";
             this.Text = "WinRemoteControl";
             this.ResumeLayout(false);
@@ -151,6 +159,7 @@ namespace WinRemoteControl
 
         private Button btnOpenSettings;
         private Button BtnAbout;
+        private Button btnSettings;
     }
 }
 

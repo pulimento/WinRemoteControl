@@ -26,6 +26,13 @@ namespace WinRemoteControl
         public void MainForm_Load(object? sender, EventArgs e) 
         {
             LoggerHelper.SetupCompleteLogger(this);
+
+            // Connect automatically if needed
+            if (AppUserSettings.Default.AUTO_CONNECT_AT_STARTUP)
+            {
+                Log.Information("Connecting automatically at startup...");
+                DoClientStart();
+            }
         }
 
         public Dictionary<string, IAction> SetupTopicsAndActions()
@@ -77,6 +84,12 @@ namespace WinRemoteControl
         {
             var aboutForm = new AboutForm();
             aboutForm.Show();
+        }
+
+        private void BtnSettings_Click(object sender, EventArgs e)
+        {
+            var settingsForm = new SettingsForm();
+            settingsForm.Show();
         }
 
         #endregion

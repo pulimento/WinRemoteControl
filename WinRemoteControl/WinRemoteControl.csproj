@@ -18,7 +18,7 @@
 		<Company />
 		<Product />
 		<RepositoryUrl>https://github.com/pulimento</RepositoryUrl>
-		<Version>1.0.3</Version>
+		<Version>1.0.4</Version>
 		<PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 	</PropertyGroup>

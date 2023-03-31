@@ -11,14 +11,22 @@ class ToggleMuteTeamsAction : IAction
 
     public Result DoAction()
     {
-        Log.Information("Toggling Teams mute");
+        Log.Information("Trying to toggle Teams mute...");
 
         Process? p = Process.GetProcessesByName("Teams").FirstOrDefault();
+        if (p == null)
+        {
+            // Try with the "new" Microsoft Teams
+            Log.Information("Classic Teams not found. Trying with the  \"new\" one...");
+            p = Process.GetProcessesByName("ms-teams").FirstOrDefault();
+        }
+
         if (p != null)
         {
             IntPtr h = p.MainWindowHandle;
             SetForegroundWindow(h);
             SendKeys.SendWait("^+{m}"); // CTRL + SHIFT + M
+            Log.Verbose("Keys were sent to Teams");
         }
         else
         {

@@ -29,48 +29,64 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
-            this.cbLaunchAppAtLogon = new System.Windows.Forms.CheckBox();
-            this.cbAutoStartListening = new System.Windows.Forms.CheckBox();
+            this.cbLaunchAppAtLogon=new CheckBox();
+            this.cbAutoStartListening=new CheckBox();
+            this.cbStartMinimized=new CheckBox();
             this.SuspendLayout();
             // 
             // cbLaunchAppAtLogon
             // 
-            this.cbLaunchAppAtLogon.AutoSize = true;
-            this.cbLaunchAppAtLogon.Location = new System.Drawing.Point(12, 12);
-            this.cbLaunchAppAtLogon.Name = "cbLaunchAppAtLogon";
-            this.cbLaunchAppAtLogon.Size = new System.Drawing.Size(135, 19);
-            this.cbLaunchAppAtLogon.TabIndex = 0;
-            this.cbLaunchAppAtLogon.Text = "Launch app at logon";
-            this.cbLaunchAppAtLogon.UseVisualStyleBackColor = true;
+            this.cbLaunchAppAtLogon.AutoSize=true;
+            this.cbLaunchAppAtLogon.Location=new Point(14, 16);
+            this.cbLaunchAppAtLogon.Margin=new Padding(3, 4, 3, 4);
+            this.cbLaunchAppAtLogon.Name="cbLaunchAppAtLogon";
+            this.cbLaunchAppAtLogon.Size=new Size(167, 24);
+            this.cbLaunchAppAtLogon.TabIndex=0;
+            this.cbLaunchAppAtLogon.Text="Launch app at logon";
+            this.cbLaunchAppAtLogon.UseVisualStyleBackColor=true;
             // 
             // cbAutoStartListening
             // 
-            this.cbAutoStartListening.AutoSize = true;
-            this.cbAutoStartListening.Location = new System.Drawing.Point(12, 37);
-            this.cbAutoStartListening.Name = "cbAutoStartListening";
-            this.cbAutoStartListening.Size = new System.Drawing.Size(247, 19);
-            this.cbAutoStartListening.TabIndex = 1;
-            this.cbAutoStartListening.Text = "Automatically connect to server at startup";
-            this.cbAutoStartListening.UseVisualStyleBackColor = true;
+            this.cbAutoStartListening.AutoSize=true;
+            this.cbAutoStartListening.Location=new Point(14, 49);
+            this.cbAutoStartListening.Margin=new Padding(3, 4, 3, 4);
+            this.cbAutoStartListening.Name="cbAutoStartListening";
+            this.cbAutoStartListening.Size=new Size(307, 24);
+            this.cbAutoStartListening.TabIndex=1;
+            this.cbAutoStartListening.Text="Automatically connect to server at startup";
+            this.cbAutoStartListening.UseVisualStyleBackColor=true;
+            // 
+            // cbStartMinimized
+            // 
+            this.cbStartMinimized.AutoSize=true;
+            this.cbStartMinimized.Location=new Point(14, 81);
+            this.cbStartMinimized.Margin=new Padding(3, 4, 3, 4);
+            this.cbStartMinimized.Name="cbStartMinimized";
+            this.cbStartMinimized.Size=new Size(348, 24);
+            this.cbStartMinimized.TabIndex=2;
+            this.cbStartMinimized.Text="Hide main window at startup. Show only on tray";
+            this.cbStartMinimized.UseVisualStyleBackColor=true;
             // 
             // SettingsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(303, 85);
+            this.AutoScaleDimensions=new SizeF(8F, 20F);
+            this.AutoScaleMode=AutoScaleMode.Font;
+            this.ClientSize=new Size(382, 131);
+            this.Controls.Add(this.cbStartMinimized);
             this.Controls.Add(this.cbAutoStartListening);
             this.Controls.Add(this.cbLaunchAppAtLogon);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "SettingsForm";
-            this.Text = "Settings";
+            this.Icon=(Icon)resources.GetObject("$this.Icon");
+            this.Margin=new Padding(3, 4, 3, 4);
+            this.Name="SettingsForm";
+            this.Text="Settings";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
 
         private CheckBox cbLaunchAppAtLogon;
         private CheckBox cbAutoStartListening;
+        private CheckBox cbStartMinimized;
     }
 }

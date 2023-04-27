@@ -34,6 +34,13 @@ namespace WinRemoteControl
                 Log.Information("Connecting automatically at startup...");
                 DoClientStart();
             }
+
+            // Start from the tray
+            if (AppUserSettings.Default.START_MINIMIZED)
+            {
+                this.ShowInTaskbar = false; // Don't show the form in the taskbar
+                this.WindowState = FormWindowState.Minimized;
+            }
         }
 
         public Dictionary<string, IAction> SetupTopicsAndActions()

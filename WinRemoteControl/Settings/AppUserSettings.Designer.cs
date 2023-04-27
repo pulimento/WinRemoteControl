@@ -12,7 +12,7 @@ namespace WinRemoteControl.Settings {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.5.0.0")]
     internal sealed partial class AppUserSettings : global::System.Configuration.ApplicationSettingsBase {
         
         private static AppUserSettings defaultInstance = ((AppUserSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new AppUserSettings())));
@@ -44,6 +44,18 @@ namespace WinRemoteControl.Settings {
             }
             set {
                 this["AUTO_CONNECT_AT_STARTUP"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool START_MINIMIZED {
+            get {
+                return ((bool)(this["START_MINIMIZED"]));
+            }
+            set {
+                this["START_MINIMIZED"] = value;
             }
         }
     }

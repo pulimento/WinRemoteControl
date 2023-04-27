@@ -21,11 +21,31 @@ namespace WinRemoteControl
             // Load current values
             cbLaunchAppAtLogon.Checked = AppUserSettings.Default.LAUNCH_AT_LOGON;
             cbAutoStartListening.Checked = AppUserSettings.Default.AUTO_CONNECT_AT_STARTUP;
+            cbStartMinimized.Checked = AppUserSettings.Default.START_MINIMIZED;
 
 
             // Listeners
             cbLaunchAppAtLogon.CheckedChanged += this.CbLaunchAppAtLogon_CheckedChanged;
-            cbAutoStartListening.CheckedChanged += this.CbAutoStartListening_CheckedChanged;            
+            cbAutoStartListening.CheckedChanged += this.CbAutoStartListening_CheckedChanged;
+            cbStartMinimized.CheckedChanged += this.CbStartMinimized_CheckChanged;
+        }
+
+        private void CbStartMinimized_CheckChanged(object? sender, EventArgs e)
+        {
+            bool currentValue = AppUserSettings.Default.START_MINIMIZED;
+            if ((sender as CheckBox)?.Checked != currentValue)
+            {
+                bool newValue = (sender as CheckBox)!.Checked;
+                AppUserSettings.Default.START_MINIMIZED = newValue;
+                AppUserSettings.Default.Save();
+                Log.Debug($"Updating config: {nameof(AppUserSettings.START_MINIMIZED)}, new value: {newValue}");
+
+                SetStartupAtLogon(newValue);
+            }
+            else
+            {
+                Log.Error($"Error setting config value: {nameof(AppUserSettings.START_MINIMIZED)}");
+            }
         }
 
         private void CbLaunchAppAtLogon_CheckedChanged(object? sender, EventArgs e)

@@ -148,13 +148,13 @@ namespace WinRemoteControl
 
         private void SetEventListeners()
         {
-            btnMute.Click += new EventHandler(this.btnMute_Click);
-            btnStartClient.Click += new EventHandler(this.btnStartClient_Click);
-            btnGoToBackground.Click += new EventHandler(this.btnGoToBackground_Click);
-            btnOpenSettings.Click += new EventHandler(this.btnOpenSettings_Click);
+            btnMute.Click += new EventHandler(this.BtnMute_Click);
+            btnStartClient.Click += new EventHandler(this.BtnStartClient_Click);
+            btnGoToBackground.Click += new EventHandler(this.BtnGoToBackground_Click);
+            btnOpenSettings.Click += new EventHandler(this.BtnOpenSettings_Click);
             this.Resize += new EventHandler(this.Form_Resize);
-            this.notifyIcon1.MouseClick += new MouseEventHandler(this.notifyIcon_RestoreWindow);
-            this.notifyIcon1.MouseDoubleClick += new MouseEventHandler(this.notifyIcon_RestoreWindow);
+            this.notifyIcon1.MouseClick += new MouseEventHandler(this.NotifyIcon_RestoreWindow);
+            this.notifyIcon1.MouseDoubleClick += new MouseEventHandler(this.NotifyIcon_RestoreWindow);
         }
 
         private Button btnOpenSettings;

@@ -69,12 +69,12 @@ namespace WinRemoteControl
 
         #region UI Callbacks
 
-        private void btnMute_Click(object sender, EventArgs e)
+        private void BtnMute_Click(object sender, EventArgs e)
         {
             new ToggleMuteTeamsAction().DoAction();
         }
 
-        private void btnOpenSettings_Click(object sender, EventArgs e)
+        private void BtnOpenSettings_Click(object sender, EventArgs e)
         {
             var result = Config.ExploreSettingsFile();
             if (result.IsFailed)
@@ -83,7 +83,7 @@ namespace WinRemoteControl
             }
         }
 
-        private void btnStartClient_Click(object sender, EventArgs e)
+        private void BtnStartClient_Click(object sender, EventArgs e)
         {
             DoClientStart();
         }
@@ -203,7 +203,7 @@ namespace WinRemoteControl
 
         #region Minimise and background
 
-        private void notifyIcon_RestoreWindow(object sender, MouseEventArgs e)
+        private void NotifyIcon_RestoreWindow(object sender, MouseEventArgs e)
         {
             Show();
             this.WindowState = FormWindowState.Normal;
@@ -219,7 +219,7 @@ namespace WinRemoteControl
             }
         }
 
-        private void btnGoToBackground_Click(object sender, EventArgs e)
+        private void BtnGoToBackground_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
         }

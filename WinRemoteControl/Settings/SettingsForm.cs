@@ -1,13 +1,4 @@
 ﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using WinRemoteControl.Settings;
 
 namespace WinRemoteControl
@@ -51,7 +42,7 @@ namespace WinRemoteControl
         private void CbLaunchAppAtLogon_CheckedChanged(object? sender, EventArgs e)
         {
             bool currentValue = AppUserSettings.Default.LAUNCH_AT_LOGON;
-            if((sender as CheckBox)?.Checked != currentValue)
+            if ((sender as CheckBox)?.Checked != currentValue)
             {
                 bool newValue = (sender as CheckBox)!.Checked;
                 AppUserSettings.Default.LAUNCH_AT_LOGON = newValue;
@@ -59,7 +50,7 @@ namespace WinRemoteControl
                 Log.Debug($"Updating config: {nameof(AppUserSettings.LAUNCH_AT_LOGON)}, new value: {newValue}");
 
                 SetStartupAtLogon(newValue);
-            } 
+            }
             else
             {
                 Log.Error($"Error setting config value: {nameof(AppUserSettings.LAUNCH_AT_LOGON)}");
@@ -88,7 +79,7 @@ namespace WinRemoteControl
             string SubKey = Application.ProductName;
             using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(RegistryRunKey, true))
             {
-                if(key == null)
+                if (key == null)
                 {
                     // Key does not exist. Strange(!)
                     Log.Error("Error trying to set the app to start at logon: Registry key does not exist");
@@ -108,10 +99,10 @@ namespace WinRemoteControl
                     if (RunKey.GetValueNames().Contains(SubKey))
                     {
                         RunKey.DeleteValue(SubKey);
-                    }                    
+                    }
                 }
                 RunKey.Close();
-            }            
+            }
         }
     }
 }

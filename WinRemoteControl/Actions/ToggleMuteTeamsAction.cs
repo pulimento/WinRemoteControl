@@ -24,9 +24,26 @@ class ToggleMuteTeamsAction : IAction
         if (p != null)
         {
             IntPtr h = p.MainWindowHandle;
-            SetForegroundWindow(h);
-            SendKeys.SendWait("^+{m}"); // CTRL + SHIFT + M
-            Log.Verbose("Keys were sent to Teams");
+            int HRESULT = SetForegroundWindow(h);
+            if (HRESULT != 0)
+            {
+                SendKeys.SendWait("^+{m}"); // CTRL + SHIFT + M
+                Log.Verbose("Keys were sent to Teams");
+            } 
+            else
+            {
+                byte[] bytes_hresult = BitConverter.GetBytes(HRESULT);
+                uint uint_hresult = BitConverter.ToUInt32(bytes_hresult, 0);
+                if (uint_hresult == 0x80070005u || uint_hresult == 0x8001011Bu)
+                {
+                    // Access denied or security restriction error
+                    Log.Error("Error trying to set foreground window: Access denied or security restriction error");
+                }
+                else
+                {
+                    Log.Error($"Unknown error trying to set foreground window, HRESULT: {uint_hresult}");
+                }
+            }
         }
         else
         {

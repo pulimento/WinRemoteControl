@@ -4,7 +4,7 @@
 .DESCRIPTION
 	This script generates a setup package. It uses Inno Setup. 
 .EXAMPLE
-	.\<script_name> -buildOutputPath WinRemoteControl\bin\Release\net5.0-windows\win-x86\publish setupExecutableNameIncludingEXEExtension WinRemoteControl_Setup_32 -CsprojPath .\WinRemoteControl\WinRemoteControl.csproj [-buildIdentifier 1.0.1] [-$baseDirectory $PSScriptRoot] [-installerOutputPath Installer\Output]
+	.\<script_name> -buildOutputPath WinRemoteControl\bin\Release\net10.0-windows\win-x86\publish -CsprojPath .\WinRemoteControl\WinRemoteControl.csproj [-buildIdentifier 1.1.0] [-$baseDirectory $PSScriptRoot] [-installerOutputPath Installer\Output]
 .LINK
 	https://github.com/pulimento
 #>
@@ -12,13 +12,13 @@
 param
 (
   [Parameter(HelpMessage="If true, it can be used to create local builds")][bool]$pathsAreRelativeToBaseDirectory = $false,
-  [string]$buildOutputPath = "WinRemoteControl\bin\Release\net6.0-windows\win-x86\publish",
+  [string]$buildOutputPath = "WinRemoteControl\bin\Release\net10.0-windows\win-x86\publish",
   [string]$CsprojPath = "WinRemoteControl\WinRemoteControl.csproj",
   [string]$SetupIconFile = "WinRemoteControl\Resources\big_icon_5jt_icon.ico",
   [Parameter(HelpMessage="Overrides build identifier, script tries to get it automatically")]$buildIdentifier,
   [string]$baseDirectory = "$PSScriptRoot",
   [string]$installerOutputPath = "Installer\Output",  
-  [string]$setupExecutableName = "WinRemoteControl_Setup_32"
+  [string]$setupExecutableName
 )
 
 ################################################################
@@ -81,12 +81,26 @@ if (-Not (Test-Path $innoSetupCompilerPath))
 { throw "InnoSetup compiler not found. Exiting..."
 }
 
+$applicationExecutablePath = Join-Path $buildOutputPath "WinRemoteControl.exe"
+if (-Not (Test-Path $applicationExecutablePath))
+{ throw "Published application executable not found: $applicationExecutablePath. Run 'dotnet publish' for the target runtime before generating the installer."
+}
+
 # Get version from csproj
 if($null -eq $buildIdentifier ) 
 {
   LogDebug "Build identifier not set, try to obtain it from .csproj"
   $xml = [Xml] (Get-Content $CsprojPath)
   $buildIdentifier = [version] $xml.Project.PropertyGroup[1].Version
+}
+
+if ([string]::IsNullOrWhiteSpace($setupExecutableName))
+{
+  $runtimeIdentifier = Split-Path (Split-Path $buildOutputPath -Parent) -Leaf
+  $targetFramework = Split-Path (Split-Path (Split-Path $buildOutputPath -Parent) -Parent) -Leaf
+  $runtimeLabel = $targetFramework -replace '\.0-windows$', ''
+  $architecture = $runtimeIdentifier -replace '^win-', ''
+  $setupExecutableName = "WinRemoteControl_Setup_v${buildIdentifier}_${runtimeLabel}_${architecture}"
 }
 
 LogSection "END Pre-compilation tasks"

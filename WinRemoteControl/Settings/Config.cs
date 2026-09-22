@@ -70,7 +70,7 @@ public class Config
                 if (File.Exists(settingsFilePath))
                 {
                     return Result.Fail("Settings file was created, but it will need to be modified in order to work. " +
-                        "Please change it. Use the button 'Open settings file' for that");
+                        "Please change it using the 'Connection settings' button.");
                 }
                 else
                 {
@@ -121,6 +121,48 @@ public class Config
         return Result.Ok(managedClientOptions);
     }
 
+    public static Result<SettingsFromFile> LoadSettingsForEditing()
+    {
+        string sourceFilePath = File.Exists(settingsFilePath)
+            ? settingsFilePath
+            : defaultSettingsFilePath;
+
+        if (!File.Exists(sourceFilePath))
+        {
+            return Result.Ok(new SettingsFromFile());
+        }
+
+        try
+        {
+            string json = File.ReadAllText(sourceFilePath);
+            var settings = JsonSerializer.Deserialize<SettingsFromFile>(json) ?? new SettingsFromFile();
+            settings.EnsureDefaultActionMappings();
+            return Result.Ok(settings);
+        }
+        catch (JsonException exception)
+        {
+            return Result.Fail($"Unable to read connection settings: {exception.Message}");
+        }
+    }
+
+    public static Result SaveSettings(SettingsFromFile settings)
+    {
+        try
+        {
+            string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(settingsFilePath, json);
+            return Result.Ok();
+        }
+        catch (IOException exception)
+        {
+            return Result.Fail($"Unable to save connection settings: {exception.Message}");
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            return Result.Fail($"Unable to save connection settings: {exception.Message}");
+        }
+    }
+
     public static Result<bool> ExploreSettingsFile()
     {
         string? filePath = null;
@@ -161,6 +203,31 @@ public class Config
         public string? TCPServerPassword { get; set; }
         public int CommunicationTimeoutInMinutes { get; set; }
         public int AutoReconnectDelayInSeconds { get; set; }
+        public List<ActionMapping> ActionMappings { get; set; } = CreateDefaultActionMappings();
+
+        public static List<ActionMapping> CreateDefaultActionMappings() =>
+        [
+            new() { Topic = Constants.TOPIC_TOGGLE_TEAMS_MUTE, Action = Constants.ACTION_TOGGLE_TEAMS_MUTE },
+            new() { Topic = Constants.TOPIC_VOLUME_UP, Action = Constants.ACTION_VOLUME_UP },
+            new() { Topic = Constants.TOPIC_VOLUME_DOWN, Action = Constants.ACTION_VOLUME_DOWN },
+            new() { Topic = Constants.TOPIC_MEDIA_NEXT_SONG, Action = Constants.ACTION_MEDIA_NEXT_SONG },
+            new() { Topic = Constants.TOPIC_MEDIA_PREV_SONG, Action = Constants.ACTION_MEDIA_PREV_SONG },
+            new() { Topic = Constants.TOPIC_PRESS_1, Action = Constants.ACTION_PRESS_1 },
+            new() { Topic = Constants.TOPIC_PRESS_2, Action = Constants.ACTION_PRESS_2 },
+            new() { Topic = Constants.TOPIC_PRESS_3, Action = Constants.ACTION_PRESS_3 },
+        ];
+
+        public void EnsureDefaultActionMappings()
+        {
+            ActionMappings ??= [];
+            foreach (var defaultMapping in CreateDefaultActionMappings())
+            {
+                if (!ActionMappings.Any(mapping => mapping.Action == defaultMapping.Action))
+                {
+                    ActionMappings.Add(defaultMapping);
+                }
+            }
+        }
 
         public bool Equals(SettingsFromFile? other)
         {
@@ -171,7 +238,8 @@ public class Config
                    this.TCPServerUsername==other.TCPServerUsername&&
                    this.TCPServerPassword==other.TCPServerPassword&&
                    this.CommunicationTimeoutInMinutes==other.CommunicationTimeoutInMinutes&&
-                   this.AutoReconnectDelayInSeconds==other.AutoReconnectDelayInSeconds;
+                   this.AutoReconnectDelayInSeconds==other.AutoReconnectDelayInSeconds&&
+                   this.ActionMappings.SequenceEqual(other.ActionMappings, ActionMappingComparer.Instance);
         }
 
         public override int GetHashCode()
@@ -179,5 +247,22 @@ public class Config
             return HashCode.Combine(this.ClientID, this.TCPServerIP, this.TCPServerPort, this.TCPServerUsername,
                 this.TCPServerPassword, this.CommunicationTimeoutInMinutes, this.AutoReconnectDelayInSeconds);
         }
+    }
+
+    public class ActionMapping
+    {
+        public string? Topic { get; set; }
+        public string? Action { get; set; }
+    }
+
+    private sealed class ActionMappingComparer : IEqualityComparer<ActionMapping>
+    {
+        public static readonly ActionMappingComparer Instance = new();
+
+        public bool Equals(ActionMapping? left, ActionMapping? right) =>
+            left?.Topic == right?.Topic && left?.Action == right?.Action;
+
+        public int GetHashCode(ActionMapping mapping) =>
+            HashCode.Combine(mapping.Topic, mapping.Action);
     }
 }

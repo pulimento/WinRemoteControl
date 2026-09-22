@@ -8,15 +8,13 @@ on:
     branches: [ master ]
     
 env:
-  Framework: net6.0-windows
+  Framework: net10.0-windows
   Configuration: Release
   Solution_Name: WinRemoteControl.sln
   Csproj_Project_Path: WinRemoteControl\WinRemoteControl.csproj
   Csproj_Subfolder: WinRemoteControl
   Win64: win-x64
   Win32: win-x86
-  Win64InstallerName: WinRemoteControl_Setup_64bit
-  Win32InstallerName: WinRemoteControl_Setup_32bit
   ArtifactsFolderName: "Artifacts"
 
 jobs:
@@ -26,15 +24,15 @@ jobs:
     steps:
     
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
     # Install the .NET Core workload
     - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.x
+        dotnet-version: 10.x
 
     # Execute all unit tests in the solution
     #- name: Execute unit tests
@@ -82,11 +80,10 @@ jobs:
       run: >
         .\GenerateInstaller.ps1
         -pathsAreRelativeToBaseDirectory $false
-        -buildOutputPath ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}
+        -buildOutputPath ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win32 }}\publish
         -CsprojPath ${{ github.workspace }}\${{ env.Csproj_Project_Path }}
         -SetupIconFile ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\Resources\big_icon_5jt_icon.ico
         -installerOutputPath '${{ github.workspace }}\${{ env.ArtifactsFolderName }}'
-        -setupExecutableName ${{ env.Win32InstallerName }}
 
     - name: Generate Inno Setup Installer - 64 bit
       shell: pwsh
@@ -94,20 +91,19 @@ jobs:
       run: >
         .\GenerateInstaller.ps1
         -pathsAreRelativeToBaseDirectory $false
-        -buildOutputPath ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win64 }}
+        -buildOutputPath ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\bin\${{ env.Configuration }}\${{ env.Framework }}\${{ env.Win64 }}\publish
         -CsprojPath ${{ github.workspace }}\${{ env.Csproj_Project_Path }}
         -SetupIconFile ${{ github.workspace }}\${{ env.Csproj_Subfolder }}\Resources\big_icon_5jt_icon.ico
         -installerOutputPath '${{ github.workspace }}\${{ env.ArtifactsFolderName }}'
-        -setupExecutableName ${{ env.Win64InstallerName }}
 
     - name: Publish installer as artifact - 32-bit
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Windows 32-bit setup
-        path: ${{ github.workspace }}\${{ env.ArtifactsFolderName }}\${{ env.Win32InstallerName }}*
+        path: ${{ github.workspace }}\${{ env.ArtifactsFolderName }}\WinRemoteControl_Setup_v*_net10_x86.exe
 
     - name: Publish installer as artifact - 64-bit
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Windows 64-bit setup
-        path: ${{ github.workspace }}\${{ env.ArtifactsFolderName }}\${{ env.Win64InstallerName }}*
+        path: ${{ github.workspace }}\${{ env.ArtifactsFolderName }}\WinRemoteControl_Setup_v*_net10_x64.exe

@@ -5,7 +5,7 @@ on:
     branches: [ master ]
     
 env:
-  Framework: net6.0-windows
+  Framework: net10.0-windows
   Configuration: Release
   Solution_Name: WinRemoteControl.sln
   Csproj_Project_Path: WinRemoteControl\WinRemoteControl.csproj
@@ -18,15 +18,15 @@ jobs:
     steps:
     
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
     # Install the .NET Core workload
     - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.x
+        dotnet-version: 10.x
 
     # Execute all unit tests in the solution
     #- name: Execute unit tests
@@ -34,4 +34,4 @@ jobs:
     
     # Generate build artifacts
     - name: Build application - 32-bit
-      run: dotnet build ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }}   
+      run: dotnet build ${{ env.Csproj_Project_Path }} /p:Configuration=${{ env.Configuration }}

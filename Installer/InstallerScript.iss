@@ -26,7 +26,7 @@
 #define MyOutputBaseFileName "WinRemoteControl_Setup"
 #endif
 #ifndef MySourceDir
-#define MySourceDir "WinRemoteControl\WinRemoteControl\bin\Release\net5.0-windows\win-x64\publish"
+#define MySourceDir "WinRemoteControl\WinRemoteControl\bin\Release\net10.0-windows\win-x64\publish"
 #endif
 #ifndef MySetupIconFile
 #define MySetupIconFile "WinRemoteControl\WinRemoteControl\Resources\big_icon_5jt_icon.ico"

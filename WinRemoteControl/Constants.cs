@@ -8,6 +8,19 @@ static class Constants
     public const string TOPIC_VOLUME_DOWN = "control/volume_down";
     public const string TOPIC_MEDIA_NEXT_SONG = "control/media_next_song";
     public const string TOPIC_MEDIA_PREV_SONG = "control/media_prev_song";
+    public const string TOPIC_PRESS_1 = "control/press_1";
+    public const string TOPIC_PRESS_2 = "control/press_2";
+    public const string TOPIC_PRESS_3 = "control/press_3";
+
+    // Configurable action identifiers
+    public const string ACTION_TOGGLE_TEAMS_MUTE = "toggle_teams_mute";
+    public const string ACTION_VOLUME_UP = "volume_up";
+    public const string ACTION_VOLUME_DOWN = "volume_down";
+    public const string ACTION_MEDIA_NEXT_SONG = "media_next_song";
+    public const string ACTION_MEDIA_PREV_SONG = "media_prev_song";
+    public const string ACTION_PRESS_1 = "press_1";
+    public const string ACTION_PRESS_2 = "press_2";
+    public const string ACTION_PRESS_3 = "press_3";
 
     // Constants to send keystrokes
     public const int APPCOMMAND_VOLUME_UP = 0xA0000;

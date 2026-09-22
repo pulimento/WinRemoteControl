@@ -5,5 +5,15 @@
   "TCPServerUsername": "user",
   "TCPServerPassword": "someawesomepass",
   "CommunicationTimeoutInMinutes": 5,
-  "AutoReconnectDelayInSeconds": 5
+  "AutoReconnectDelayInSeconds": 5,
+  "ActionMappings": [
+    { "Topic": "control/toggle_teams_mute", "Action": "toggle_teams_mute" },
+    { "Topic": "control/volume_up", "Action": "volume_up" },
+    { "Topic": "control/volume_down", "Action": "volume_down" },
+    { "Topic": "control/media_next_song", "Action": "media_next_song" },
+    { "Topic": "control/media_prev_song", "Action": "media_prev_song" },
+    { "Topic": "control/press_1", "Action": "press_1" },
+    { "Topic": "control/press_2", "Action": "press_2" },
+    { "Topic": "control/press_3", "Action": "press_3" }
+  ]
 }

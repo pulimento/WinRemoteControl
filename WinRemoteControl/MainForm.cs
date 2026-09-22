@@ -11,7 +11,8 @@ namespace WinRemoteControl
     public partial class MainForm : Form
     {
         private IManagedMqttClient? mqttClient;
-        private readonly Dictionary<string, IAction> topicsAndActions;
+        private bool mqttHandlersRegistered;
+        private Dictionary<string, IAction> topicsAndActions;
 
         public MainForm()
         {            
@@ -43,27 +44,53 @@ namespace WinRemoteControl
             }
         }
 
-        public Dictionary<string, IAction> SetupTopicsAndActions()
+        public Dictionary<string, IAction> SetupTopicsAndActions(IEnumerable<Config.ActionMapping>? mappings = null)
         {
-            return new Dictionary<string, IAction>() {
-                { Constants.TOPIC_TOGGLE_TEAMS_MUTE , new ToggleMuteTeamsAction() },
-                { Constants.TOPIC_VOLUME_UP , new VolumeDownAction(this) },
-                { Constants.TOPIC_VOLUME_DOWN , new VolumeDownAction(this) },
-                { Constants.TOPIC_MEDIA_NEXT_SONG , new MediaNextSongAction() },
-                { Constants.TOPIC_MEDIA_PREV_SONG , new MediaPrevSongAction() },
-            };
+            var topics = new Dictionary<string, IAction>();
+            foreach (var mapping in mappings ?? Config.SettingsFromFile.CreateDefaultActionMappings())
+            {
+                if (string.IsNullOrWhiteSpace(mapping.Topic) || string.IsNullOrWhiteSpace(mapping.Action))
+                {
+                    continue;
+                }
+
+                var action = CreateAction(mapping.Action);
+                if (action == null)
+                {
+                    Log.Warning("Ignoring unknown configured action '{Action}' for topic '{Topic}'.", mapping.Action, mapping.Topic);
+                    continue;
+                }
+
+                if (!topics.TryAdd(mapping.Topic, action))
+                {
+                    Log.Warning("Ignoring duplicate configured topic '{Topic}'.", mapping.Topic);
+                }
+            }
+            return topics;
         }
+
+        private IAction? CreateAction(string action) => action switch
+        {
+            Constants.ACTION_TOGGLE_TEAMS_MUTE => new ToggleMuteTeamsAction(),
+            Constants.ACTION_VOLUME_UP => new VolumeUpAction(this),
+            Constants.ACTION_VOLUME_DOWN => new VolumeDownAction(this),
+            Constants.ACTION_MEDIA_NEXT_SONG => new MediaNextSongAction(),
+            Constants.ACTION_MEDIA_PREV_SONG => new MediaPrevSongAction(),
+            Constants.ACTION_PRESS_1 => new KeyPressAction("1"),
+            Constants.ACTION_PRESS_2 => new KeyPressAction("2"),
+            Constants.ACTION_PRESS_3 => new KeyPressAction("3"),
+            _ => null,
+        };
 
         private void DoActionForTopic(string topic, string payload)
         {
-            IAction action = topicsAndActions[topic];
-            if (action != null)
+            if (topicsAndActions.TryGetValue(topic, out IAction? action))
             {
                 action.DoAction();
-            } 
+            }
             else
             {
-                Log.Warning("Error doing action for topic, topic received is not a known one");
+                Log.Warning("Ignoring message for an unconfigured topic: {Topic}", topic);
             }
         }
 
@@ -76,16 +103,18 @@ namespace WinRemoteControl
 
         private void BtnOpenSettings_Click(object sender, EventArgs e)
         {
-            var result = Config.ExploreSettingsFile();
-            if (result.IsFailed)
-            {
-                Log.Error($"Error opening settings: {LoggerHelper.ResultErrorsToString(result.Errors)}");
-            }
+            using var connectionSettingsForm = new ConnectionSettingsForm();
+            connectionSettingsForm.ShowDialog(this);
         }
 
         private void BtnStartClient_Click(object sender, EventArgs e)
         {
             DoClientStart();
+        }
+
+        private async void BtnStopClient_Click(object sender, EventArgs e)
+        {
+            await DoClientStop();
         }
 
         private void BtnAbout_Click(object sender, EventArgs e)
@@ -106,6 +135,7 @@ namespace WinRemoteControl
 
         private async void DoClientStart()
         {
+            Log.Information("Starting MQTT client...");
             var checkSettingsResult = Config.CheckSettingsFile();
             if (checkSettingsResult.IsFailed)
             {
@@ -129,22 +159,69 @@ namespace WinRemoteControl
                 return;
             }
 
-            // Handlers
-            mqttClient.UseConnectedHandler(this.HandleConnectedAsync);
-            mqttClient.UseDisconnectedHandler(this.HandleDisconnectedAsync);
-            mqttClient.UseApplicationMessageReceivedHandler(this.HandleApplicationMessageReceivedAsync);
+            if (!mqttHandlersRegistered)
+            {
+                mqttClient.UseConnectedHandler(this.HandleConnectedAsync);
+                mqttClient.UseDisconnectedHandler(this.HandleDisconnectedAsync);
+                mqttClient.UseApplicationMessageReceivedHandler(this.HandleApplicationMessageReceivedAsync);
+                mqttHandlersRegistered = true;
+            }
 
             var clientConfig = Config.LoadClientConfigFromFile();
             if (clientConfig.IsFailed)
             {
-                Log.Error($"Error loading settings: {LoggerHelper.ResultErrorsToString(checkSettingsResult.Errors)}");
+                Log.Error($"Error loading settings: {LoggerHelper.ResultErrorsToString(clientConfig.Errors)}");
             }
             else
             {
-                await this.mqttClient.StartAsync(clientConfig.Value);
+                try
+                {
+                    var mappingSettings = Config.LoadSettingsForEditing();
+                    if (mappingSettings.IsFailed)
+                    {
+                        Log.Error("Unable to load action mappings: {Errors}", LoggerHelper.ResultErrorsToString(mappingSettings.Errors));
+                        return;
+                    }
+
+                    topicsAndActions = SetupTopicsAndActions(mappingSettings.Value.ActionMappings);
+                    if (topicsAndActions.Count == 0)
+                    {
+                        Log.Error("No valid MQTT topic/action mappings are configured. Add at least one mapping in Connection settings.");
+                        return;
+                    }
+
+                    await this.mqttClient.StartAsync(clientConfig.Value);
+                    btnStartClient.Enabled = false;
+                    btnStopClient.Enabled = true;
+                    Log.Information("MQTT client started. Connecting to the broker now; connection results will appear here.");
+                }
+                catch (Exception exception)
+                {
+                    Log.Error(exception, "MQTT client could not start. Check the server address, port, credentials, and network connection.");
+                }
+            }
+        }
+
+        private async Task DoClientStop()
+        {
+            if (mqttClient == null || !mqttClient.IsStarted)
+            {
+                Log.Information("MQTT client is already stopped.");
+                return;
             }
 
-            Log.Information($"MQTT client started sucessfully, trying to connect...");
+            try
+            {
+                Log.Information("Stopping MQTT client and cancelling reconnect attempts...");
+                await mqttClient.StopAsync();
+                btnStartClient.Enabled = true;
+                btnStopClient.Enabled = false;
+                Log.Information("MQTT client stopped.");
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception, "MQTT client could not stop cleanly.");
+            }
         }
 
         #endregion
@@ -194,7 +271,16 @@ namespace WinRemoteControl
                 $"ResultCode: {x.ConnectResult.ResultCode} | " +
                 $"Reason: {x.ConnectResult.ReasonString} | " +
                 $"ResponseInfo: {x.ConnectResult.ResponseInformation}";
-            Log.Information($"Client disconnected - {item}");
+            if (x.Exception != null)
+            {
+                Log.Error(x.Exception,
+                    "MQTT connection failed or was lost - {Details}. The client will keep retrying until you press Stop.",
+                    item);
+            }
+            else
+            {
+                Log.Warning("MQTT client disconnected - {Details}. Press Stop to cancel any reconnect attempts.", item);
+            }
 
             return Task.CompletedTask;
         }

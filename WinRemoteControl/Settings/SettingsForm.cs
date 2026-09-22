@@ -76,7 +76,7 @@ namespace WinRemoteControl
         private void SetStartupAtLogon(bool runAtStartup)
         {
             const string RegistryRunKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
-            string SubKey = Application.ProductName;
+            string subKey = Application.ProductName ?? "WinRemoteControl";
             using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(RegistryRunKey, true))
             {
                 if (key == null)
@@ -86,22 +86,18 @@ namespace WinRemoteControl
                     return;
                 }
 
-                // Get rid of that nullable variable
-                var RunKey = key!;
-
                 if (runAtStartup)
                 {
                     // Add registry key                
-                    RunKey.SetValue(SubKey, Application.ExecutablePath.ToString());
+                    key.SetValue(subKey, Application.ExecutablePath);
                 }
                 else
                 {
-                    if (RunKey.GetValueNames().Contains(SubKey))
+                    if (key.GetValueNames().Contains(subKey))
                     {
-                        RunKey.DeleteValue(SubKey);
+                        key.DeleteValue(subKey);
                     }
                 }
-                RunKey.Close();
             }
         }
     }

@@ -35,6 +35,7 @@ namespace WinRemoteControl
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.btnMute = new System.Windows.Forms.Button();
             this.btnStartClient = new System.Windows.Forms.Button();
+            this.btnStopClient = new System.Windows.Forms.Button();
             this.textBoxLog = new System.Windows.Forms.TextBox();
             this.btnGoToBackground = new System.Windows.Forms.Button();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
@@ -58,8 +59,18 @@ namespace WinRemoteControl
             this.btnStartClient.Name = "btnStartClient";
             this.btnStartClient.Size = new System.Drawing.Size(140, 30);
             this.btnStartClient.TabIndex = 2;
-            this.btnStartClient.Text = "Start listening";
+            this.btnStartClient.Text = "Start";
             this.btnStartClient.UseVisualStyleBackColor = true;
+            //
+            // btnStopClient
+            //
+            this.btnStopClient.Enabled = false;
+            this.btnStopClient.Location = new System.Drawing.Point(568, 8);
+            this.btnStopClient.Name = "btnStopClient";
+            this.btnStopClient.Size = new System.Drawing.Size(88, 30);
+            this.btnStopClient.TabIndex = 8;
+            this.btnStopClient.Text = "Stop";
+            this.btnStopClient.UseVisualStyleBackColor = true;
             // 
             // textBoxLog
             // 
@@ -92,7 +103,7 @@ namespace WinRemoteControl
             this.btnOpenSettings.Name = "btnOpenSettings";
             this.btnOpenSettings.Size = new System.Drawing.Size(114, 22);
             this.btnOpenSettings.TabIndex = 5;
-            this.btnOpenSettings.Text = "Open settings file";
+            this.btnOpenSettings.Text = "Connection settings";
             this.btnOpenSettings.UseVisualStyleBackColor = true;
             // 
             // BtnAbout
@@ -123,6 +134,7 @@ namespace WinRemoteControl
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(830, 397);
             this.Controls.Add(this.btnSettings);
+            this.Controls.Add(this.btnStopClient);
             this.Controls.Add(this.BtnAbout);
             this.Controls.Add(this.btnOpenSettings);
             this.Controls.Add(this.btnGoToBackground);
@@ -143,6 +155,7 @@ namespace WinRemoteControl
         public TextBox textBoxLog;
         private Button btnMute;
         private Button btnStartClient;
+        private Button btnStopClient;
         private Button btnGoToBackground;
         private NotifyIcon notifyIcon1;
 
@@ -150,6 +163,7 @@ namespace WinRemoteControl
         {
             btnMute.Click += new EventHandler(this.BtnMute_Click);
             btnStartClient.Click += new EventHandler(this.BtnStartClient_Click);
+            btnStopClient.Click += new EventHandler(this.BtnStopClient_Click);
             btnGoToBackground.Click += new EventHandler(this.BtnGoToBackground_Click);
             btnOpenSettings.Click += new EventHandler(this.BtnOpenSettings_Click);
             this.Resize += new EventHandler(this.Form_Resize);

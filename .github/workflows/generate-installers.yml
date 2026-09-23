@@ -61,19 +61,6 @@ jobs:
     - name: Create Artifacts Folder
       run: New-Item -Path '${{ github.workspace }}' -Name '${{ env.ArtifactsFolderName }}' -ItemType "directory"
 
-    # Inno-Setup
-    - name: Download Inno Setup
-      shell: pwsh
-      run: Invoke-WebRequest -Uri "https://jrsoftware.org/download.php/is.exe?site=1" -OutFile .\innosetupinstaller.exe
-      
-    - name: Install Inno Setup
-      shell: pwsh
-      run: .\innosetupinstaller.exe /verysilent /currentuser /log=inno_setup_install_log.txt
-      
-    #- name: Print Inno Setup install log
-    #  shell: pwsh
-    #  run: cat inno_setup_install_log.txt
-      
     - name: Generate Inno Setup Installer - 32 bit
       shell: pwsh
       # Note: Here we're using the 'folded' style in the [YAML Syntax](https://yaml-multiline.info/)

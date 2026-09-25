@@ -23,7 +23,20 @@
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 	</PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <AssemblyName>WinRemoteControl DEBUG</AssemblyName>
+    <Product>WinRemoteControl DEBUG</Product>
+    <ApplicationIcon>Resources\DebugIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <EmbeddedResource Include="Resources\DebugIcon.ico" LogicalName="WinRemoteControl.AppIcon.ico" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' != 'Debug'">
+    <EmbeddedResource Include="big_icon_5jt_icon.ico" LogicalName="WinRemoteControl.AppIcon.ico" />
+  </ItemGroup>
+
   <ItemGroup>
+    <PackageReference Include="YamlDotNet" Version="18.1.0" />
     <PackageReference Include="Autoupdater.NET.Official" Version="1.9.3" />
     <PackageReference Include="FluentResults" Version="3.2.0" />
     <PackageReference Include="MQTTnet" Version="3.1.2" />
@@ -55,9 +68,6 @@
       <LastGenOutput>AppUserSettings.Designer.cs</LastGenOutput>
     </None>
     <None Update="settings_example.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

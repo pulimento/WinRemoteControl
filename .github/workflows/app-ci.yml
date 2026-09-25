@@ -28,9 +28,8 @@ jobs:
       with:
         dotnet-version: 10.x
 
-    # Execute all unit tests in the solution
-    #- name: Execute unit tests
-    #  run: dotnet test
+    - name: Verify settings, profiles, command safety, and MQTT lifecycle
+      run: dotnet run --project WinRemoteControl.Tests -c Release -- --mqtt
     
     # Generate build artifacts
     - name: Build application - 32-bit

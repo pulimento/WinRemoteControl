@@ -207,26 +207,17 @@ public class Config
 
         public static List<ActionMapping> CreateDefaultActionMappings() =>
         [
-            new() { Topic = Constants.TOPIC_TOGGLE_TEAMS_MUTE, Action = Constants.ACTION_TOGGLE_TEAMS_MUTE },
-            new() { Topic = Constants.TOPIC_VOLUME_UP, Action = Constants.ACTION_VOLUME_UP },
-            new() { Topic = Constants.TOPIC_VOLUME_DOWN, Action = Constants.ACTION_VOLUME_DOWN },
-            new() { Topic = Constants.TOPIC_MEDIA_NEXT_SONG, Action = Constants.ACTION_MEDIA_NEXT_SONG },
-            new() { Topic = Constants.TOPIC_MEDIA_PREV_SONG, Action = Constants.ACTION_MEDIA_PREV_SONG },
-            new() { Topic = Constants.TOPIC_PRESS_1, Action = Constants.ACTION_PRESS_1 },
-            new() { Topic = Constants.TOPIC_PRESS_2, Action = Constants.ACTION_PRESS_2 },
-            new() { Topic = Constants.TOPIC_PRESS_3, Action = Constants.ACTION_PRESS_3 },
+            new() { Topic = "control/press_enter", Action = "press_enter" },
+            new() { Topic = "control/start_dictation", Action = "start_dictation" },
+            new() { Topic = Constants.TOPIC_PRESS_1, Action = MappingProfile.Press1Id },
+            new() { Topic = Constants.TOPIC_PRESS_2, Action = MappingProfile.Press2Id },
+            new() { Topic = Constants.TOPIC_PRESS_3, Action = MappingProfile.Press3Id },
+            new() { Topic = "control/mute_gchat", Action = MappingProfile.GChatId },
         ];
 
         public void EnsureDefaultActionMappings()
         {
-            ActionMappings ??= [];
-            foreach (var defaultMapping in CreateDefaultActionMappings())
-            {
-                if (!ActionMappings.Any(mapping => mapping.Action == defaultMapping.Action))
-                {
-                    ActionMappings.Add(defaultMapping);
-                }
-            }
+            ActionMappings ??= CreateDefaultActionMappings();
         }
 
         public bool Equals(SettingsFromFile? other)

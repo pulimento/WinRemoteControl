@@ -10,14 +10,17 @@ namespace WinRemoteControl
         public AboutForm()
         {
             InitializeComponent();
+            Text = AppBranding.DisplayName + " About";
+            Icon = AppBranding.CreateIcon();
+            label1.Text = AppBranding.DisplayName + ", from @pulimento";
             this.Load += new EventHandler(this.AboutForm_Load);
         }
 
         public void AboutForm_Load(object? sender, EventArgs e)
         {
-            if(Assembly.GetEntryAssembly() != null)
+            if(typeof(AboutForm).Assembly != null)
             {
-                Assembly entryAssembly = Assembly.GetEntryAssembly()!;
+                Assembly entryAssembly = typeof(AboutForm).Assembly;
                 if (entryAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() != null)
                 {
                     AssemblyInformationalVersionAttribute infoVersionAttr = entryAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!;
